@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.shadowfang'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+}
+
+dependencies {
+    compileOnly "dev.folia:folia-api:1.21.11-R0.1-SNAPSHOT"
+    implementation "com.google.code.gson:gson:2.10.1"
+    compileOnly files('../worlds/plugin/build/libs/worlds-4.2.2-all.jar')
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+processResources {
+    def props = [version: project.version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}

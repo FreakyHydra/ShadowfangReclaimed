@@ -1,0 +1,89 @@
+package com.shadowfang.core.commands;
+
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.shadowfang.core.ShadowfangCoreMod;
+import com.shadowfang.core.rank.RankManager;
+import com.shadowfang.core.rank.UserManager;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
+
+public class SfCommand {
+
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(Commands.literal("sf")
+            .executes(ctx -> {
+                ctx.getSource().sendSuccess(() -> Component.literal("=== Shadowfang Core ===").withStyle(ChatFormatting.GOLD), false);
+                ctx.getSource().sendSuccess(() -> Component.literal("/sf status - View plugin status").withStyle(ChatFormatting.YELLOW), false);
+                ctx.getSource().sendSuccess(() -> Component.literal("/sf rankinfo - View your rank").withStyle(ChatFormatting.YELLOW), false);
+                ctx.getSource().sendSuccess(() -> Component.literal("/sf ranklist - List all ranks").withStyle(ChatFormatting.YELLOW), false);
+                return 1;
+            })
+            .then(Commands.literal("status")
+                .executes(ctx -> {
+                    ShadowfangCoreMod core = ShadowfangCoreMod.getInstance();
+                    ctx.getSource().sendSuccess(() -> Component.literal("=== Shadowfang Core ===").withStyle(ChatFormatting.GOLD), false);
+                    ctx.getSource().sendSuccess(() -> Component.literal("Ranks: " + core.getRankManager().getAllRanks().size()).withStyle(ChatFormatting.YELLOW), false);
+                    ctx.getSource().sendSuccess(() -> Component.literal("Users: " + core.getUserManager().getAllUsers().size()).withStyle(ChatFormatting.YELLOW), false);
+                    return 1;
+                }))
+            .then(Commands.literal("reload")
+                .requires(src -> src.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+                .executes(ctx -> {
+                    ShadowfangCoreMod core = ShadowfangCoreMod.getInstance();
+                    core.getRankManager().load();
+                    core.getChatManager().reload();
+                    ctx.getSource().sendSuccess(() -> Component.literal("Shadowfang Core reloaded.").withStyle(ChatFormatting.GREEN), true);
+                    return 1;
+                }))
+            .then(Commands.literal("rankset")
+                .requires(src -> src.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+                .then(Commands.argument("player", EntityArgument.player())
+                    .then(Commands.argument("rank", StringArgumentType.word())
+                        .executes(ctx -> {
+                            ServerPlayer target = EntityArgument.getPlayer(ctx, "player");
+                            String rankName = StringArgumentType.getString(ctx, "rank");
+                            ShadowfangCoreMod core = ShadowfangCoreMod.getInstance();
+                            RankManager rm = core.getRankManager();
+                            if (rm.getRank(rankName) == null) {
+                                ctx.getSource().sendFailure(Component.literal("Rank not found: " + rankName).withStyle(ChatFormatting.RED));
+                                return 0;
+                            }
+                            core.getUserManager().setPlayerRank(target.getUUID(), rankName);
+                            ctx.getSource().sendSuccess(() ->
+                                Component.literal("Set " + target.getName().getString() + "'s rank to " + rankName).withStyle(ChatFormatting.GREEN), true);
+                            return 1;
+                        }))))
+            .then(Commands.literal("rankinfo")
+                .requires(src -> src.isPlayer())
+                .executes(ctx -> {
+                    ServerPlayer player = ctx.getSource().getPlayerOrException();
+                    ShadowfangCoreMod core = ShadowfangCoreMod.getInstance();
+                    UserManager um = core.getUserManager();
+                    RankManager rm = core.getRankManager();
+                    String rankName = um.getPlayerRank(player.getUUID());
+                    var rank = rm.getRank(rankName);
+                    if (rank != null) {
+                        player.sendSystemMessage(Component.literal("Rank: " + rank.getDisplayName()).withStyle(ChatFormatting.GOLD));
+                        player.sendSystemMessage(Component.literal("Playtime: " + um.getPlaytimeMinutes(player.getUUID()) + " min").withStyle(ChatFormatting.YELLOW));
+                    }
+                    return 1;
+                }))
+            .then(Commands.literal("ranklist")
+                .executes(ctx -> {
+                    ctx.getSource().sendSuccess(() -> Component.literal("=== Ranks ===").withStyle(ChatFormatting.GOLD), false);
+                    ShadowfangCoreMod core = ShadowfangCoreMod.getInstance();
+                    for (var rank : core.getRankManager().getRanks()) {
+                        ctx.getSource().sendSuccess(() ->
+                            Component.literal(rank.getName() + " (" + rank.getDisplayName() + ") - weight " + rank.getWeight()).withStyle(ChatFormatting.YELLOW), false);
+                    }
+                    return 1;
+                }))
+        );
+    }
+}
