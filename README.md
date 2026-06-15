@@ -4,18 +4,19 @@ A custom Folia 1.21 server plugin featuring factions, economy, bounties, lore, a
 
 ## Credits & Thanks
 
-- **Axiom (Moulberry)** — Ported version of the Axiom Paper Plugin for world editing.  
-  https://github.com/Moulberry/AxiomPaperPlugin  
-  *Ported to Folia because the original uses threads and scheduling not compatible with Folia's region-threaded architecture.*
+- **RosettaStone (FreakyHydra)** — A Folia compatibility bridge developed by FreakyHydra. It detects Folia at runtime and intercepts Bukkit scheduler, teleportation, and collection calls, routing them transparently to Folia's region-threaded architecture. On standard Paper it falls back to vanilla Bukkit. This layer is what makes third-party plugins run unmodified on Folia.  
+  *Components: `FoliaCompat` (runtime detection + scheduler routing), `RegionDispatcher` (chunk-scoped task execution), `FoliaPlayer` (thread-safe teleportation), `ThreadSafeCollections` (concurrent data structures).*
 
-- **Worlds (Minecraft Worlds Plugin)** — Ported version used for multi-world management.  
-  https://www.spigotmc.org/resources/worlds.64947/  
-  *Ported to Folia because the original uses Bukkit schedulers and world-loading APIs that conflict with Folia's thread-per-region model.*
+- **Axiom (Moulberry)** — World editing plugin, made Folia-compatible through RosettaStone's `RegionDispatcher` and `FoliaCompat`. Axiom's own source is unmodified — RosettaStone handles scheduling its tasks on the correct Folia region threads.  
+  https://github.com/Moulberry/AxiomPaperPlugin
+
+- **Worlds (Minecraft Worlds Plugin)** — Multi-world management plugin, made Folia-compatible through RosettaStone's scheduler routing and thread-safe world-loading wrappers.  
+  https://www.spigotmc.org/resources/worlds.64947/
 
 - **PaperMC / Folia** — The server platform this plugin runs on.  
   https://papermc.io/software/folia
 
-If you are the creator of **Axiom** or **Worlds** and wish for your ported plugin to be removed from this distribution, please contact FreakyHydra and it will be taken down immediately.
+If you are the creator of **Axiom** or **Worlds** and wish for your plugin (or the ported copy distributed here) to be removed, please contact FreakyHydra and it will be taken down immediately.
 
 ---
 
