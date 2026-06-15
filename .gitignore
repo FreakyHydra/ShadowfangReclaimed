@@ -19,14 +19,8 @@ bin/
 # Runtime / server environment
 server-package/
 
-# Folia server runtime (exclude JDK, world data, logs)
-foliaserver/java/
-foliaserver/world/
-foliaserver/logs/
-foliaserver/.console_history
-foliaserver/plugins/spark/
-foliaserver/plugins/bStats/
-foliaserver/plugins/faststats/
+# Folia server runtime (entire directory)
+foliaserver/
 
 # Legacy ecosystem archive
 shadowfang-ecosystem/
