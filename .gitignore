@@ -12,19 +12,46 @@ build/
 *.jar
 bin/
 
-# Archive / distribution files
+# Archive files
 *.zip
 *.rar
 
 # Runtime / server environment
 server-package/
-
-# Folia server runtime (entire directory)
 foliaserver/
 
 # Legacy ecosystem archive
 shadowfang-ecosystem/
-*.rar
+
+# Opencode config
+.opencode/
+
+# Skills
+skills/
+
+# Docs and guides (not source)
+CHANGELOG.md
+PUSH-GUIDE.md
+
+# Server setup scripts
+RUN-ON-DEV-MACHINE.bat
+RUN-ON-MAIN-PC.bat
+setup-server.bat
+setup-ssh-keys.bat
+start-server.bat
+update-plugins.bat
+
+# Misc
+test-connection.txt
+message-to-moulberry.txt
+
+# Resource pack (not plugin source)
+resourcepack/
+
+# Legacy / internal plugin files
+Shadowfang-Core-Folia/changelog
+Shadowfang-Core-Folia/rename.py
+Shadowfang-Core-Folia/src/main/java/com/shadowfang/core/commands/SfCommand_legacy.txt
 
 # OS
 .DS_Store
