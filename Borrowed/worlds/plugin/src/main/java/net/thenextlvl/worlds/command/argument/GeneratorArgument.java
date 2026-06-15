@@ -1,0 +1,45 @@
+package net.thenextlvl.worlds.command.argument;
+
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.thenextlvl.worlds.WorldsPlugin;
+import net.thenextlvl.worlds.generator.Generator;
+import org.bukkit.plugin.Plugin;
+import org.jspecify.annotations.NullMarked;
+
+import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
+
+@NullMarked
+public final class GeneratorArgument implements SimpleArgumentType<Generator, String> {
+    private final WorldsPlugin plugin;
+
+    public GeneratorArgument(final WorldsPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    @Override
+    public Generator convert(final StringReader reader, final String type) {
+        return Generator.fromString(type);
+    }
+
+    @Override
+    public ArgumentType<String> getNativeType() {
+        return StringArgumentType.string();
+    }
+
+    @Override
+    public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
+        Arrays.stream(plugin.getServer().getPluginManager().getPlugins())
+                .filter(Plugin::isEnabled)
+                .filter(plugin.generatorView()::hasGenerator)
+                .map(Plugin::getName)
+                .filter(s -> s.contains(builder.getRemaining()))
+                .forEach(builder::suggest);
+        return builder.buildFuture();
+    }
+}

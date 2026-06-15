@@ -1,0 +1,6 @@
+name: RosettaStone
+version: '$version'
+main: com.shadowfang.rosetta.RosettaStonePlugin
+description: Folia compatibility layer for Paper plugins
+api-version: '1.21'
+folia-supported: true

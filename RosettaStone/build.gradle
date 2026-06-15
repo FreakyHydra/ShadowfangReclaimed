@@ -1,0 +1,34 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.shadowfang'
+version = '1.0.0'
+description = 'Folia compatibility layer for Paper plugins'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+}
+
+dependencies {
+    compileOnly "dev.folia:folia-api:1.21.11-R0.1-SNAPSHOT"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+processResources {
+    def props = [version: project.version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}

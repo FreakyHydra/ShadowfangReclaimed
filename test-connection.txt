@@ -1,0 +1,4 @@
+Shadowfang Server deploy test
+==============================
+If you can read this file on P:\Shadowfang-Server,
+the SSH connection between dev and main PC works!

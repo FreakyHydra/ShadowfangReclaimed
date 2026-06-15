@@ -8,9 +8,11 @@ A custom Folia 1.21 server plugin featuring factions, economy, bounties, lore, a
   *Components: `FoliaCompat` (runtime detection + scheduler routing), `RegionDispatcher` (chunk-scoped task execution), `FoliaPlayer` (thread-safe teleportation), `ThreadSafeCollections` (concurrent data structures).*
 
 - **Axiom (Moulberry)** — World editing plugin, made Folia-compatible through RosettaStone's `RegionDispatcher` and `FoliaCompat`. Axiom's own source is unmodified — RosettaStone handles scheduling its tasks on the correct Folia region threads.  
+  Source: `Borrowed/AxiomPaperPlugin/`  
   https://github.com/Moulberry/AxiomPaperPlugin
 
 - **Worlds (Minecraft Worlds Plugin)** — Multi-world management plugin, made Folia-compatible through RosettaStone's scheduler routing and thread-safe world-loading wrappers.  
+  Source: `Borrowed/worlds/`  
   https://www.spigotmc.org/resources/worlds.64947/
 
 - **PaperMC / Folia** — The server platform this plugin runs on.  

@@ -7,6 +7,31 @@ build/
 .vscode/
 *.iml
 
+# Compiled output
+*.class
+*.jar
+bin/
+
+# Archive / distribution files
+*.zip
+*.rar
+
+# Runtime / server environment
+server-package/
+
+# Folia server runtime (exclude JDK, world data, logs)
+foliaserver/java/
+foliaserver/world/
+foliaserver/logs/
+foliaserver/.console_history
+foliaserver/plugins/spark/
+foliaserver/plugins/bStats/
+foliaserver/plugins/faststats/
+
+# Legacy ecosystem archive
+shadowfang-ecosystem/
+*.rar
+
 # OS
 .DS_Store
 Thumbs.db
