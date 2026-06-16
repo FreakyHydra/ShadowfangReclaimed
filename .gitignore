@@ -43,6 +43,7 @@ setup-server.bat
 setup-ssh-keys.bat
 start-server.bat
 update-plugins.bat
+setup-main-pc.bat
 
 # Misc
 test-connection.txt
