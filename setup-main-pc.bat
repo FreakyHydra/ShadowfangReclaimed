@@ -2,19 +2,27 @@
 setlocal enabledelayedexpansion
 cd /d "%~dp0"
 echo =============================================
-echo  Shadowfang Reclaimed — Main PC Setup
+echo  Shadowfang Reclaimed - Main PC Setup
 echo =============================================
 echo.
 echo This will install Git and clone the repo.
 echo.
 pause
 
+:: --- Locate git (already installed or from ProgramFiles) ---
+set "GIT="
+where git >nul 2>&1 && set "GIT=git"
+if not defined GIT (
+    if exist "%ProgramFiles%\Git\bin\git.exe" set "GIT=%ProgramFiles%\Git\bin\git.exe"
+    if exist "%ProgramFiles(x86)%\Git\bin\git.exe" set "GIT=%ProgramFiles(x86)%\Git\bin\git.exe"
+)
+
 :: --- Step 1: Install Git if missing ---
-where git >nul 2>&1
-if !ERRORLEVEL! neq 0 (
+if not defined GIT (
     echo [1/3] Git not found. Downloading...
-    powershell -Command "& {Invoke-WebRequest -Uri 'https://github.com/git-for-windows/git/releases/download/v2.49.0.windows.1/Git-2.49.0-64-bit.exe' -OutFile '%TEMP%\Git-64-bit.exe'}"
+    powershell -Command "Invoke-WebRequest -Uri 'https://github.com/git-for-windows/git/releases/download/v2.49.0.windows.1/Git-2.49.0-64-bit.exe' -OutFile '%TEMP%\Git-64-bit.exe'"
     if !ERRORLEVEL! neq 0 (
+        echo.
         echo ERROR: Download failed. Check internet connection.
         pause
         exit /b 1
@@ -22,19 +30,18 @@ if !ERRORLEVEL! neq 0 (
     echo Installing Git (silent)...
     "%TEMP%\Git-64-bit.exe" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /CLOSEAPPLICATIONS
     if !ERRORLEVEL! neq 0 (
-        echo ERROR: Git installation failed. Try running manually:
-        echo   "%TEMP%\Git-64-bit.exe"
+        echo.
+        echo ERROR: Git installation failed.
         pause
         exit /b 1
     )
+    set "GIT=%ProgramFiles%\Git\bin\git.exe"
     echo Git installed.
+    echo.
+    pause
 ) else (
-    echo [1/3] Git already installed.
+    echo [1/3] Git found.
 )
-
-:: --- Refresh PATH from registry ---
-for /f "skip=2 tokens=3*" %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v Path 2^>nul') do set "PATH=%%a%%b"
-for /f "skip=2 tokens=2*" %%a in ('reg query "HKCU\Environment" /v Path 2^>nul') do set "PATH=%%a%%b;%PATH%"
 
 :: --- Step 2: Clone repo ---
 echo.
@@ -43,14 +50,15 @@ echo [2/3] Setting up repository...
 if exist "%USERPROFILE%\ShadowfangReclaimed" (
     echo Repo already exists. Updating...
     cd /d "%USERPROFILE%\ShadowfangReclaimed"
-    git pull
+    "%GIT%" pull
     if !ERRORLEVEL! neq 0 (
-        echo WARNING: git pull failed. Will try to continue.
+        echo WARNING: git pull failed.
     )
 ) else (
     cd /d "%USERPROFILE%"
-    git clone https://github.com/FreakyHydra/ShadowfangReclaimed.git
+    "%GIT%" clone https://github.com/FreakyHydra/ShadowfangReclaimed.git
     if !ERRORLEVEL! neq 0 (
+        echo.
         echo ERROR: Clone failed. Check internet connection.
         pause
         exit /b 1
@@ -63,23 +71,22 @@ if exist "%USERPROFILE%\ShadowfangReclaimed" (
 echo.
 echo [3/3] Configuring Git...
 cd /d "%USERPROFILE%\ShadowfangReclaimed"
-git config user.name "FreakyHydra"
-git config user.email "FreakyHydra@users.noreply.github.com"
-git config credential.helper manager
+"%GIT%" config user.name "FreakyHydra"
+"%GIT%" config user.email "FreakyHydra@users.noreply.github.com"
+"%GIT%" config credential.helper manager
 
-:: Try a fetch to trigger credential prompt
 echo.
-echo If prompted, enter these credentials for GitHub:
+echo If prompted, enter these for GitHub:
 echo   Username: FreakyHydra
 echo   Password: (paste your personal access token)
 echo.
-git fetch --quiet
+"%GIT%" fetch --quiet
 if !ERRORLEVEL! equ 0 (
     echo Credentials verified.
 ) else (
-    echo Note: git fetch had an issue. You may need to run:
+    echo To set up credentials later, run:
     echo   git pull
-    echo manually and enter your token when prompted.
+    echo and enter your token when prompted.
 )
 
 :: --- Done ---
@@ -90,7 +97,7 @@ echo =============================================
 echo.
 echo Repo: %USERPROFILE%\ShadowfangReclaimed
 echo.
-echo To update the source later, run:
-echo   cd /d "%USERPROFILE%\ShadowfangReclaimed" ^&^& git pull
+echo To update later, run:
+echo   cd /d "%USERPROFILE%\ShadowfangReclaimed" ^&^& "%GIT%" pull
 echo.
 pause
