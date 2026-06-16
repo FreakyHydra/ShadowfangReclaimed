@@ -60,3 +60,6 @@ Shadowfang-Core-Folia/src/main/java/com/shadowfang/core/commands/SfCommand_legac
 # OS
 .DS_Store
 Thumbs.db
+
+# Runtime logs
+logs/

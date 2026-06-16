@@ -6,40 +6,16 @@ folia-supported: true
 description: The master plugin for Shadowfang on Folia.
 softdepend: []
 commands:
-  faction:
-    description: Core faction commands
-    aliases: [f]
-  lore:
-    description: Access unlocked lore
-  travel:
-    description: Safely travel between cross-dimension region threads in Folia
-    usage: /travel <world>
-  sfv:
-    description: Shadowfang Verse commands
-    usage: /sfv <subcommand>
-  hub:
-    description: Teleport to the hub world
-    usage: /hub
-  warp:
-    description: Teleport to a world
-    usage: /warp <world>
-  worlds:
-    description: List loaded worlds
-    usage: /worlds
-  sign:
-    description: Place a portal sign
-    usage: /sign <world>
-  list:
-    description: List loaded worlds
-    usage: /list
-  setspawn:
-    description: Set spawn point
-    usage: /setspawn
-  spawn:
-    description: Teleport to spawn
-    usage: /spawn [world]
-  economy:
-    description: Manage Silver Coins
-    aliases: [eco, silver]
-  bounty:
-    description: Bounty hunting quests
+  sr:
+    description: Shadowfang Reclaimed command root
+    usage: /sr <sub-plugin> <subcommand>
+permissions:
+  shadowfang.cmd:
+    description: Access /sr commands
+    default: op
+  shadowfang.we.use:
+    description: Use the path tools
+    default: op
+  shadowfang.we.admin:
+    description: Admin path tools
+    default: op

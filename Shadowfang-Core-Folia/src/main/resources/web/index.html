@@ -200,7 +200,9 @@
             <div class="nav-link" onclick="switchView('settings')">SYSTEM CONFIG</div>
             <div class="nav-link" onclick="switchView('worlds')">DIMENSIONS</div>
             <div class="nav-link" onclick="switchView('players')">ENTITIES</div>
+            <div class="nav-link" onclick="switchView('commands')">COMMANDS</div>
             <div class="nav-link" onclick="switchView('terminal')">TERMINAL</div>
+            <div class="nav-link" onclick="switchView('boards')">INFO BOARDS</div>
         </div>
         <div class="status">
             <div class="status-dot"></div>
@@ -288,6 +290,141 @@
             </div>
         </div>
         
+        <!-- COMMANDS VIEW -->
+        <div id="view-commands" class="view">
+            <div class="panel">
+                <h2>COMMAND REFERENCE — SORTED BY PLUGIN</h2>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+
+                    <!-- FACTION -->
+                    <div class="cmd-cat">
+                        <h3 style="color:var(--neon-blue);margin:0 0 10px;">FACTION <span style="font-size:0.7rem;color:#64748b;">/sr f | /sr faction</span></h3>
+                        <table style="font-size:0.85rem;">
+                            <tbody>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">info</td><td style="color:var(--text-main);">View your faction details</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">create &lt;name&gt;</td><td style="color:var(--text-main);">Create a new faction</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">invite &lt;player&gt;</td><td style="color:var(--text-main);">Invite a player</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">accept</td><td style="color:var(--text-main);">Accept a pending invitation</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">deny</td><td style="color:var(--text-main);">Decline a pending invitation</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">claim &lt;radius&gt;</td><td style="color:var(--text-main);">Claim territory around bell <span style="color:var(--neon-red);">[ALPHA]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">spawn</td><td style="color:var(--text-main);">Teleport to faction spawn</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">setspawn</td><td style="color:var(--text-main);">Set faction spawn <span style="color:var(--neon-red);">[ALPHA]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">deposit &lt;amt&gt;</td><td style="color:var(--text-main);">Deposit coins into hoard</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">withdraw &lt;amt&gt;</td><td style="color:var(--text-main);">Withdraw from hoard <span style="color:var(--neon-red);">[ALPHA]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">promote &lt;p&gt;</td><td style="color:var(--text-main);">Promote a member <span style="color:var(--neon-red);">[ALPHA]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">demote &lt;p&gt;</td><td style="color:var(--text-main);">Demote a member <span style="color:var(--neon-red);">[ALPHA]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">kick &lt;player&gt;</td><td style="color:var(--text-main);">Kick a member <span style="color:var(--neon-red);">[ALPHA]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">leave</td><td style="color:var(--text-main);">Leave your faction</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">disband</td><td style="color:var(--text-main);">Dissolve faction <span style="color:var(--neon-red);">[ALPHA]</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- ECONOMY -->
+                    <div class="cmd-cat">
+                        <h3 style="color:var(--neon-blue);margin:0 0 10px;">ECONOMY <span style="font-size:0.7rem;color:#64748b;">/sr e | /sr economy</span></h3>
+                        <table style="font-size:0.85rem;">
+                            <tbody>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">[no args]</td><td style="color:var(--text-main);">View your Silver Coin balance</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">pay &lt;player&gt; &lt;amt&gt;</td><td style="color:var(--text-main);">Send coins to another player</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- BOUNTY -->
+                    <div class="cmd-cat">
+                        <h3 style="color:var(--neon-blue);margin:0 0 10px;">BOUNTY <span style="font-size:0.7rem;color:#64748b;">/sr b | /sr bounty</span></h3>
+                        <table style="font-size:0.85rem;">
+                            <tbody>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">[no args]</td><td style="color:var(--text-main);">View your active bounty quest</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">new</td><td style="color:var(--text-main);">Get a new random bounty quest</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- LORE -->
+                    <div class="cmd-cat">
+                        <h3 style="color:var(--neon-blue);margin:0 0 10px;">LORE <span style="font-size:0.7rem;color:#64748b;">/sr l | /sr lore</span></h3>
+                        <table style="font-size:0.85rem;">
+                            <tbody>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">[no args]</td><td style="color:var(--text-main);">View faction lore archive</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">spawnbook</td><td style="color:var(--text-main);">Spawn a lore fragment <span style="color:var(--neon-red);">[ADMIN]</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- PATH / ROAD (WorldEdit) -->
+                    <div class="cmd-cat">
+                        <h3 style="color:var(--neon-blue);margin:0 0 10px;">PATH / ROAD <span style="font-size:0.7rem;color:#64748b;">/sr r | /sr we | /sr road | /sr path</span></h3>
+                        <table style="font-size:0.85rem;">
+                            <tbody>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">wand</td><td style="color:var(--text-main);">Get the path-selection wand</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">pos1 / pos2</td><td style="color:var(--text-main);">Set selection corners (or wand clicks)</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">copy</td><td style="color:var(--text-main);">Capture pattern from selection (player = anchor)</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">paste</td><td style="color:var(--text-main);">Paste pattern rotated to your facing</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">start</td><td style="color:var(--text-main);">Toggle walk-paste mode ON</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">stop</td><td style="color:var(--text-main);">Toggle walk-paste mode OFF</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">undo</td><td style="color:var(--text-main);">Revert your last paste action</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">clear</td><td style="color:var(--text-main);">Clear selection & clipboard</td></tr>
+                            </tbody>
+                        </table>
+                        <div style="margin-top:8px;font-size:0.75rem;color:var(--neon-red);">Requires: shadowfang.we.use</div>
+                    </div>
+
+                    <!-- VERSE / TELEPORT -->
+                    <div class="cmd-cat">
+                        <h3 style="color:var(--neon-blue);margin:0 0 10px;">VERSE <span style="font-size:0.7rem;color:#64748b;">/sr v | /sr verse</span></h3>
+                        <table style="font-size:0.85rem;">
+                            <tbody>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">list / worlds</td><td style="color:var(--text-main);">List all loaded dimensions</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">warp &lt;world&gt;</td><td style="color:var(--text-main);">Teleport to a world</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">travel &lt;world&gt;</td><td style="color:var(--text-main);">Travel to a world (same as warp)</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">spawn [world]</td><td style="color:var(--text-main);">Go to spawn</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">hub</td><td style="color:var(--text-main);">Teleport to the Hub</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">sign &lt;world&gt;</td><td style="color:var(--text-main);">Place a portal sign <span style="color:var(--neon-red);">[ADMIN]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">setspawn</td><td style="color:var(--text-main);">Set world spawn <span style="color:var(--neon-red);">[ADMIN]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">create &lt;n&gt; &lt;t&gt;</td><td style="color:var(--text-main);">Create a new world <span style="color:var(--neon-red);">[ADMIN]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">remove &lt;name&gt;</td><td style="color:var(--text-main);">Unload a world <span style="color:var(--neon-red);">[ADMIN]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">import &lt;name&gt;</td><td style="color:var(--text-main);">Import loaded world <span style="color:var(--neon-red);">[ADMIN]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">import-all</td><td style="color:var(--text-main);">Import all worlds <span style="color:var(--neon-red);">[ADMIN]</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- SHORTCUTS -->
+                    <div class="cmd-cat">
+                        <h3 style="color:var(--neon-blue);margin:0 0 10px;">QUICK SHORTCUTS</h3>
+                        <table style="font-size:0.85rem;">
+                            <tbody>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">/sr h / hub</td><td style="color:var(--text-main);">Teleport to the Hub</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">/sr s / spawn</td><td style="color:var(--text-main);">Teleport to spawn</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">/sr w / warp &lt;w&gt;</td><td style="color:var(--text-main);">Warp to a world</td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">/sr t / travel &lt;w&gt;</td><td style="color:var(--text-main);">Travel to a world</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- INFOBOARD -->
+                    <div class="cmd-cat">
+                        <h3 style="color:var(--neon-blue);margin:0 0 10px;">INFO BOARDS <span style="font-size:0.7rem;color:#64748b;">/sr i | /sr infoboard | /sr board</span></h3>
+                        <table style="font-size:0.85rem;">
+                            <tbody>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">create &lt;id&gt;</td><td style="color:var(--text-main);">Create an info board <span style="color:var(--neon-red);">[ADMIN]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">remove &lt;id&gt;</td><td style="color:var(--text-main);">Remove an info board <span style="color:var(--neon-red);">[ADMIN]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">list</td><td style="color:var(--text-main);">List all info boards <span style="color:var(--neon-red);">[ADMIN]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">add &lt;id&gt; &lt;pr&gt;</td><td style="color:var(--text-main);">Add program to board <span style="color:var(--neon-red);">[ADMIN]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">program &lt;name&gt;</td><td style="color:var(--text-main);">Create custom program <span style="color:var(--neon-red);">[ADMIN]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">move &lt;id&gt; &lt;xy&gt;</td><td style="color:var(--text-main);">Move board to block <span style="color:var(--neon-red);">[ADMIN]</span></td></tr>
+                                <tr><td style="color:var(--neon-yellow);white-space:nowrap;">programs</td><td style="color:var(--text-main);">List programs <span style="color:var(--neon-red);">[ADMIN]</span></td></tr>
+                            </tbody>
+                        </table>
+                        <div style="margin-top:8px;font-size:0.75rem;color:var(--neon-red);">Requires: shadowfang.admin</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <!-- TERMINAL VIEW (Legacy fallback) -->
         <div id="view-terminal" class="view">
             <div class="panel" style="flex:1; height: 100%;">
@@ -297,6 +434,33 @@
                     <span style="color:var(--neon-red); margin-right:10px; font-size:1.2rem;">></span>
                     <input type="text" id="terminal-input" style="flex:1; background:transparent; border:none; color:#fff; font-size:1.1rem; outline:none;" placeholder="Run command...">
                 </div>
+            </div>
+        </div>
+
+        <!-- INFO BOARDS VIEW -->
+        <div id="view-boards" class="view">
+            <div class="panel" style="margin-bottom:20px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                    <h2 style="border:none;margin:0;padding:0;">INFO BOARD TERMINALS</h2>
+                    <button class="btn-green" onclick="refreshBoards()">REFRESH</button>
+                </div>
+                <div id="boards-container" style="color:var(--neon-yellow);">LOADING...</div>
+            </div>
+            <div class="panel">
+                <h2>CUSTOM PROGRAM EDITOR</h2>
+                <div class="form-group">
+                    <label>Program Name</label>
+                    <input type="text" id="prog-name" placeholder="e.g. welcome" style="width:50%;">
+                </div>
+                <div class="form-group" style="align-items:flex-start;">
+                    <label>Content (pages separated by ---)</label>
+                    <textarea id="prog-content" rows="8" style="width:50%;background:rgba(0,0,0,0.5);border:1px solid var(--neon-blue);color:var(--neon-blue);font-family:'Share Tech Mono',monospace;padding:8px;outline:none;resize:vertical;" placeholder="§6§lWELCOME&#10;§7Line 2&#10;---&#10;§6§lPage 2"></textarea>
+                </div>
+                <div style="display:flex;gap:10px;">
+                    <button class="btn-green" onclick="saveProgram()">SAVE PROGRAM</button>
+                    <button class="btn" onclick="loadPrograms()">REFRESH LIST</button>
+                </div>
+                <div id="programs-list" style="margin-top:15px;color:var(--text-main);"></div>
             </div>
         </div>
 
@@ -517,6 +681,119 @@
             } catch (e) {}
         }
         setInterval(fetchLogs, 1500);
+
+        // INFO BOARDS
+        async function refreshBoards() {
+            const container = document.getElementById('boards-container');
+            container.innerHTML = 'SCANNING TERMINALS...';
+            try {
+                const res = await fetch('/api/boards');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.length === 0) {
+                        container.innerHTML = '<div style="color:var(--neon-yellow);">No info boards deployed. Use /board create in-game.</div>';
+                        return;
+                    }
+                    let html = '<table><thead><tr><th>ID</th><th>World</th><th>Location</th><th>Programs</th><th>Actions</th></tr></thead><tbody>';
+                    data.forEach(b => {
+                        html += `<tr>
+                            <td style="color:var(--neon-blue);">${b.id}</td>
+                            <td>${b.world}</td>
+                            <td style="color:#64748b;">${b.x.toFixed(1)}, ${b.y.toFixed(1)}, ${b.z.toFixed(1)}</td>
+                            <td style="color:var(--neon-green);">${b.programs.join(', ') || 'none'}</td>
+                            <td>
+                                <button class="btn-red" onclick="deleteBoard('${b.id}')" style="font-size:0.8rem;">DELETE</button>
+                            </td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table>';
+                    container.innerHTML = html;
+                }
+            } catch(e) {
+                container.innerHTML = 'ERROR CONNECTING TO CORE.';
+            }
+        }
+
+        async function deleteBoard(id) {
+            if (!confirm(`Terminate board '${id}'?`)) return;
+            try {
+                await fetch(`/api/boards/${id}`, { method: 'DELETE' });
+                refreshBoards();
+            } catch(e) {}
+        }
+
+        async function loadPrograms() {
+            const container = document.getElementById('programs-list');
+            container.innerHTML = 'LOADING...';
+            try {
+                const res = await fetch('/api/boards/programs');
+                if (res.ok) {
+                    const data = await res.json();
+                    let html = '<div style="margin-top:10px;"><b style="color:var(--neon-blue);">BUILT-IN:</b> ' + data.builtin.join(', ') + '</div>';
+                    html += '<div style="margin-top:10px;"><b style="color:var(--neon-yellow);">CUSTOM:</b></div>';
+                    if (data.custom.length === 0) {
+                        html += '<div style="color:#64748b;margin-top:5px;">No custom programs yet.</div>';
+                    } else {
+                        html += '<ul style="margin-top:5px;">';
+                        data.custom.forEach(p => {
+                            html += `<li style="margin-bottom:8px;">
+                                <b style="color:var(--neon-green);">${p.name}</b>
+                                <span style="color:#64748b;"> (${p.pages.length} page${p.pages.length !== 1 ? 's' : ''})</span>
+                                <button class="btn-red" onclick="deleteProgram('${p.name}')" style="font-size:0.7rem;margin-left:10px;">DELETE</button>
+                            </li>`;
+                        });
+                        html += '</ul>';
+                    }
+                    container.innerHTML = html;
+                }
+            } catch(e) {
+                container.innerHTML = 'ERROR CONNECTING TO CORE.';
+            }
+        }
+
+        async function saveProgram() {
+            const name = document.getElementById('prog-name').value.trim();
+            const content = document.getElementById('prog-content').value.trim();
+            if (!name) return alert('Program name required.');
+            try {
+                const res = await fetch('/api/boards/programs', {
+                    method: 'POST',
+                    body: JSON.stringify({ name: name, pages: content })
+                });
+                if (res.ok) {
+                    alert('Program saved.');
+                    document.getElementById('prog-name').value = '';
+                    document.getElementById('prog-content').value = '';
+                    loadPrograms();
+                } else {
+                    alert('Failed to save program.');
+                }
+            } catch(e) {
+                alert('Error saving program.');
+            }
+        }
+
+        async function deleteProgram(name) {
+            if (!confirm(`Delete program '${name}'?`)) return;
+            try {
+                await fetch(`/api/boards/programs/${name}`, { method: 'DELETE' });
+                loadPrograms();
+            } catch(e) {}
+        }
+
+        // Load boards and programs when switching to that view
+        const origSwitchView = window.switchView;
+        window.switchView = function(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            const el = document.getElementById('view-' + viewId);
+            if (el) el.classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            if (event && event.target) event.target.classList.add('active');
+            if (viewId === 'settings') loadSettings();
+            if (viewId === 'worlds') loadWorlds();
+            if (viewId === 'players') loadPlayers();
+            if (viewId === 'boards') { refreshBoards(); loadPrograms(); }
+        };
 
     </script>
 </body>

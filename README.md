@@ -1,6 +1,52 @@
 # Shadowfang Reclaimed
 
-A custom Folia 1.21 server plugin featuring factions, economy, bounties, lore, and cross-world travel.
+A custom Folia server plugin featuring factions, economy, bounties, lore, cross-world travel, and path building — all accessed through a unified `/sr` command system.
+
+## /sr Command System
+
+All plugin commands route through a single root: `/sr <sub-plugin> <subcommand>`. Each sub-plugin has a letter key and optional word keys.
+
+| Sub-plugin | Keys | Purpose |
+|---|---|---|
+| **Faction** | `f`, `faction` | Faction creation, territory, members |
+| **Economy** | `e`, `economy` | Silver Coin balance and transfers |
+| **Bounty** | `b`, `bounty` | Bounty hunting quests |
+| **Lore** | `l`, `lore` | Faction lore archive |
+| **Road / Path** | `r`, `we`, `road`, `worldedit`, `path`, `pave` | Path building tools (WorldEdit-style) |
+| **Verse** | `v`, `verse`, `sign`, `list`, `worlds` | Cross-world travel and management |
+| **InfoBoard** | `i`, `infoboard`, `board` | Info board display terminals |
+
+**Quick shortcuts:** `/sr h` (hub), `/sr s` (spawn), `/sr w <world>` (warp), `/sr t <world>` (travel).
+
+A full command reference by category is available in-game via the web dashboard at `http://localhost:56552` > **COMMANDS** tab.
+
+**Permissions:**
+- `shadowfang.cmd` — base permission for `/sr` access (default: op)
+- `shadowfang.we.use` — access the path tools (default: op)
+- `shadowfang.we.admin` — admin path operations
+- `shadowfang.admin` — admin operations across all sub-plugins
+
+## Path Tools (WorldEdit) Plugin
+
+A Folia-safe path-paving toolset. Build a road segment by hand, capture it as a 3D pattern, then tile it by walking or pasting.
+
+**Quick start:**
+```
+/sr r wand          Get the path wand
+/sr r pos1          Set first corner (or left-click with wand)
+/sr r pos2          Set second corner (or right-click with wand)
+/sr r copy          Capture the pattern (your position = anchor)
+/sr r paste         Paste 2 blocks in front, rotated to your facing
+/sr r start         Start walk-paste (road tiles as you walk)
+/sr r stop          Stop walk-paste
+/sr r undo          Revert last paste
+```
+
+**Key features:**
+- **Template-stamping** — build once, stamp forever. The pattern follows you as you walk, rotating to match your facing.
+- **Air offsets carve terrain** — air blocks in the template clear the world, so roads tunnel through mountains.
+- **Undo support** — blocks are snapshotted before writing; `/sr r undo` restores them.
+- **Folia-safe** — all block I/O goes through `RegionScheduler.execute()`; writes are batched by chunk.
 
 ## Credits & Thanks
 
