@@ -15,10 +15,10 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
 
-      - name: Build Worlds dependency
+      - name: Build Worlds API dependency
         run: |
           chmod +x gradlew
-          ./gradlew :plugin:build
+          ./gradlew :api:jar
         working-directory: Borrowed/worlds
 
       - name: Build with Gradle

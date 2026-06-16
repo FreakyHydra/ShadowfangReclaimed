@@ -16,7 +16,7 @@ repositories {
 dependencies {
     compileOnly "dev.folia:folia-api:1.21.11-R0.1-SNAPSHOT"
     implementation "com.google.code.gson:gson:2.10.1"
-    compileOnly files('../Borrowed/worlds/plugin/build/libs/worlds-4.2.2-all.jar')
+    compileOnly files('../Borrowed/worlds/api/build/libs/api-4.2.2.jar')
 }
 
 java {
