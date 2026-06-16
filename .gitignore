@@ -1,3 +1,6 @@
+# CI configuration (not needed for source)
+.github/workflows/
+
 # Gradle build output
 build/
 .gradle/
