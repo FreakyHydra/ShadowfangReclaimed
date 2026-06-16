@@ -1,6 +1,20 @@
 # Shadowfang Reclaimed
 
-A custom Folia server plugin featuring factions, economy, bounties, lore, cross-world travel, and path building — all accessed through a unified `/sr` command system.
+A custom Folia 26.1.2 server plugin featuring factions, economy, bounties, lore, cross-world travel, and path building — all accessed through a unified `/sr` command system.
+
+## RosettaStone — Folia Compatibility Layer
+
+RosettaStone is the core compatibility bridge that makes non-Folia-aware plugins run on Folia's region-threaded architecture. It intercepts Bukkit scheduler, teleportation, and collection calls at runtime, routing them to the correct Folia region threads. On a standard Paper server it falls back to vanilla Bukkit — no code changes needed.
+
+**Components:**
+- `FoliaCompat` — runtime Folia detection + scheduler routing (`Bukkit.getScheduler()` → `GlobalRegionScheduler`)
+- `RegionDispatcher` — chunk-scoped task execution (`server.execute()` → per-region dispatch)
+- `FoliaPlayer` — thread-safe teleportation (`teleport()` → `teleportAsync()`)
+- `ThreadSafeCollections` — concurrent data structures
+
+**Used by:** Axiom and Worlds — third-party plugins that speak vanilla Bukkit and need translation to Folia's threading model.
+
+The `/sr` sub-plugins (factions, economy, path tools, etc.) are native Folia code and do **not** use RosettaStone.
 
 ## /sr Command System
 
@@ -48,36 +62,24 @@ A Folia-safe path-paving toolset. Build a road segment by hand, capture it as a 
 - **Undo support** — blocks are snapshotted before writing; `/sr r undo` restores them.
 - **Folia-safe** — all block I/O goes through `RegionScheduler.execute()`; writes are batched by chunk.
 
-## RosettaStone — Folia Compatibility Layer
-
-RosettaStone is the core compatibility bridge that makes Folia's region-threaded architecture transparent to plugins. It intercepts Bukkit scheduler, teleportation, and collection calls at runtime, routing them to the correct Folia region threads. On a standard Paper server it falls back to vanilla Bukkit — no code changes needed.
-
-**Components:**
-- `FoliaCompat` — runtime Folia detection + scheduler routing
-- `RegionDispatcher` — chunk-scoped task execution
-- `FoliaPlayer` — thread-safe teleportation (`teleportAsync`)
-- `ThreadSafeCollections` — concurrent data structures
-
-This layer is what makes third-party plugins (Axiom, Worlds) and all `/sr` sub-plugins (factions, path tools, etc.) run unmodified on Folia 26.1.2.
-
 ## Credits &amp; Thanks
 
-- **Axiom (Moulberry)** — World editing plugin, made Folia-compatible through RosettaStone's `RegionDispatcher` and `FoliaCompat`.  
-  Source: `Borrowed/AxiomPaperPlugin/`  
-  https://github.com/Moulberry/AxiomPaperPlugin
+- **Axiom (Moulberry)** — World editing plugin by Moulberry (https://github.com/Moulberry/AxiomPaperPlugin). Our copy has been patched for Folia 26.1.2: all non-thread-safe collections replaced with `ConcurrentHashMap`, all `Bukkit.getScheduler()` calls routed through `FoliaCompat`, all `server.execute()` calls routed through `RegionDispatcher`, and all `player.teleport()` replaced with `teleportAsync()`. 7 files modified.
 
-- **Worlds (Minecraft Worlds Plugin)** — Multi-world management plugin, made Folia-compatible through RosettaStone's scheduler routing and thread-safe world-loading wrappers.  
-  Source: `Borrowed/worlds/`  
-  https://www.spigotmc.org/resources/worlds.64947/
+- **Worlds (Minecraft Worlds Plugin)** — Multi-world management plugin (https://www.spigotmc.org/resources/worlds.64947/). Made Folia-compatible through RosettaStone's scheduler routing and thread-safe world-loading wrappers.
 
-- **PaperMC / Folia** — The server platform.  
-  https://papermc.io/software/folia
+- **PaperMC / Folia** — The server platform (https://papermc.io/software/folia).
 
 If you are the creator of **Axiom** or **Worlds** and wish for your plugin (or the ported copy distributed here) to be removed, please contact FreakyHydra and it will be taken down immediately.
 
 ---
 
 ## Changelog
+
+### /sr Command System &amp; Path Tools Plugin
+**Version:** 1.1.0 | **Date:** June 17, 2026
+
+Unified all commands under a single `/sr <sub-plugin> <subcommand>` root. Added a Folia-safe WorldEdit-style path building plugin (`com.shadowfang.core.worldedit`).
 
 ### Faction Bell Claiming System
 **Version:** 1.0.0 | **Date:** June 15, 2026
