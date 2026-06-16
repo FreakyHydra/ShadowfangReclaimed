@@ -48,12 +48,21 @@ A Folia-safe path-paving toolset. Build a road segment by hand, capture it as a 
 - **Undo support** — blocks are snapshotted before writing; `/sr r undo` restores them.
 - **Folia-safe** — all block I/O goes through `RegionScheduler.execute()`; writes are batched by chunk.
 
-## Credits & Thanks
+## RosettaStone — Folia Compatibility Layer
 
-- **RosettaStone (FreakyHydra)** — A Folia compatibility bridge developed by FreakyHydra. It detects Folia at runtime and intercepts Bukkit scheduler, teleportation, and collection calls, routing them transparently to Folia's region-threaded architecture. On standard Paper it falls back to vanilla Bukkit. This layer is what makes third-party plugins run unmodified on Folia.  
-  *Components: `FoliaCompat` (runtime detection + scheduler routing), `RegionDispatcher` (chunk-scoped task execution), `FoliaPlayer` (thread-safe teleportation), `ThreadSafeCollections` (concurrent data structures).*
+RosettaStone is the core compatibility bridge that makes Folia's region-threaded architecture transparent to plugins. It intercepts Bukkit scheduler, teleportation, and collection calls at runtime, routing them to the correct Folia region threads. On a standard Paper server it falls back to vanilla Bukkit — no code changes needed.
 
-- **Axiom (Moulberry)** — World editing plugin, made Folia-compatible through RosettaStone's `RegionDispatcher` and `FoliaCompat`. Axiom's own source is unmodified — RosettaStone handles scheduling its tasks on the correct Folia region threads.  
+**Components:**
+- `FoliaCompat` — runtime Folia detection + scheduler routing
+- `RegionDispatcher` — chunk-scoped task execution
+- `FoliaPlayer` — thread-safe teleportation (`teleportAsync`)
+- `ThreadSafeCollections` — concurrent data structures
+
+This layer is what makes third-party plugins (Axiom, Worlds) and all `/sr` sub-plugins (factions, path tools, etc.) run unmodified on Folia 26.1.2.
+
+## Credits &amp; Thanks
+
+- **Axiom (Moulberry)** — World editing plugin, made Folia-compatible through RosettaStone's `RegionDispatcher` and `FoliaCompat`.  
   Source: `Borrowed/AxiomPaperPlugin/`  
   https://github.com/Moulberry/AxiomPaperPlugin
 
@@ -61,7 +70,7 @@ A Folia-safe path-paving toolset. Build a road segment by hand, capture it as a 
   Source: `Borrowed/worlds/`  
   https://www.spigotmc.org/resources/worlds.64947/
 
-- **PaperMC / Folia** — The server platform this plugin runs on.  
+- **PaperMC / Folia** — The server platform.  
   https://papermc.io/software/folia
 
 If you are the creator of **Axiom** or **Worlds** and wish for your plugin (or the ported copy distributed here) to be removed, please contact FreakyHydra and it will be taken down immediately.
@@ -83,21 +92,21 @@ If you are the creator of **Axiom** or **Worlds** and wish for your plugin (or t
 
 | Command | Description |
 |---------|-------------|
-| `/f create <name>` | Create a new faction |
-| `/f invite <player>` | Invite a player to your faction |
-| `/f accept` | Accept a pending invitation |
-| `/f deny` | Decline a pending invitation |
-| `/f claim <radius>` | Claim a (2×radius+1)² chunk area around your bell (Alpha only) |
-| `/f info` | View faction info, hoard balance, member count |
-| `/f setspawn` | Set faction spawn point (Alpha only) |
-| `/f spawn` | Teleport to faction spawn |
-| `/f deposit <amount>` | Deposit Silver Coins into the faction hoard |
-| `/f withdraw <amount>` | Withdraw Silver Coins from the hoard (Alpha only) |
-| `/f promote <player>` | Promote a member (Alpha only) |
-| `/f demote <player>` | Demote a member (Alpha only) |
-| `/f kick <player>` | Kick a member (Alpha only) |
-| `/f leave` | Leave your faction |
-| `/f disband` | Dissolve your faction (Alpha only) |
+| `/sr f create <name>` | Create a new faction |
+| `/sr f invite <player>` | Invite a player to your faction |
+| `/sr f accept` | Accept a pending invitation |
+| `/sr f deny` | Decline a pending invitation |
+| `/sr f claim <radius>` | Claim a (2×radius+1)² chunk area around your bell (Alpha only) |
+| `/sr f info` | View faction info, hoard balance, member count |
+| `/sr f setspawn` | Set faction spawn point (Alpha only) |
+| `/sr f spawn` | Teleport to faction spawn |
+| `/sr f deposit <amount>` | Deposit Silver Coins into the faction hoard |
+| `/sr f withdraw <amount>` | Withdraw Silver Coins from the hoard (Alpha only) |
+| `/sr f promote <player>` | Promote a member (Alpha only) |
+| `/sr f demote <player>` | Demote a member (Alpha only) |
+| `/sr f kick <player>` | Kick a member (Alpha only) |
+| `/sr f leave` | Leave your faction |
+| `/sr f disband` | Dissolve your faction (Alpha only) |
 
 **Protections:**
 - Territory blocks block breaking, placement, and interaction from non-members
