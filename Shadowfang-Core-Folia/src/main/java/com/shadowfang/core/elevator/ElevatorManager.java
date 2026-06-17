@@ -169,11 +169,66 @@ public class ElevatorManager {
             return;
         }
 
-        if (destinations.size() == 1) {
-            teleportTo(player, destinations.get(0));
+        ElevatorGroup.ElevatorFloor floorAbove = null;
+        ElevatorGroup.ElevatorFloor floorBelow = null;
+        List<ElevatorGroup.ElevatorFloor> lateralFloors = new ArrayList<>();
+        int tolerance = 1;
+
+        for (ElevatorGroup.ElevatorFloor floor : destinations) {
+            boolean sameX = Math.abs(floor.getX() - x) <= tolerance;
+            boolean sameZ = Math.abs(floor.getZ() - z) <= tolerance;
+
+            if (sameX && sameZ) {
+                if (floor.getY() > y) {
+                    if (floorAbove == null || floor.getY() < floorAbove.getY()) {
+                        floorAbove = floor;
+                    }
+                } else if (floor.getY() < y) {
+                    if (floorBelow == null || floor.getY() > floorBelow.getY()) {
+                        floorBelow = floor;
+                    }
+                }
+            } else {
+                lateralFloors.add(floor);
+            }
+        }
+
+        boolean hasVertical = (floorAbove != null || floorBelow != null);
+        float pitch = player.getLocation().getPitch();
+        boolean lookingUp = pitch < -30;
+        boolean lookingDown = pitch > 30;
+
+        if (!hasVertical) {
+            if (destinations.size() == 1) {
+                teleportTo(player, destinations.get(0));
+            } else {
+                pendingDestinations.put(id, destinations);
+                openElevatorMenu(player, destinations, group.getName());
+            }
+            return;
+        }
+
+        if (floorAbove != null && floorBelow != null) {
+            if (lookingUp) {
+                teleportTo(player, floorAbove);
+            } else if (lookingDown) {
+                teleportTo(player, floorBelow);
+            } else {
+                if (!lateralFloors.isEmpty()) {
+                    List<ElevatorGroup.ElevatorFloor> combined = new ArrayList<>();
+                    combined.add(floorAbove);
+                    combined.add(floorBelow);
+                    combined.addAll(lateralFloors);
+                    pendingDestinations.put(id, combined);
+                    openElevatorMenu(player, combined, group.getName());
+                } else {
+                    player.sendMessage("§7Look ↑ or ↓ while sneaking to choose a floor.");
+                }
+            }
+        } else if (floorAbove != null) {
+            teleportTo(player, floorAbove);
         } else {
-            pendingDestinations.put(id, destinations);
-            openElevatorMenu(player, destinations, group.getName());
+            teleportTo(player, floorBelow);
         }
     }
 
