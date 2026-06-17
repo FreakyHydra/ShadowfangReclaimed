@@ -3,17 +3,12 @@ package com.shadowfang.core.elevator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shadowfang.core.ShadowfangCorePlugin;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -152,18 +147,23 @@ public class ElevatorManager {
         int y = loc.getBlockY() - 1;
         int z = loc.getBlockZ();
 
-        String groupName = findGroupAt(world, x, y, z);
-        if (groupName == null) return;
+        String groupKey = findGroupAt(world, x, y, z);
+        if (groupKey == null) return;
 
-        ElevatorGroup group = groups.get(groupName);
+        ElevatorGroup group = groups.get(groupKey);
         if (group == null || group.getFloorCount() < 2) {
             player.sendMessage("§cNot enough floors in this teleporter group.");
             return;
         }
 
+        List<ElevatorGroup.ElevatorFloor> allFloors = group.getFloors();
         List<ElevatorGroup.ElevatorFloor> destinations = new ArrayList<>();
-        for (ElevatorGroup.ElevatorFloor floor : group.getFloors()) {
-            if (!floor.getWorld().equals(world) || floor.getX() != x || floor.getY() != y || floor.getZ() != z) {
+        int currentFloorIndex = -1;
+        for (int i = 0; i < allFloors.size(); i++) {
+            ElevatorGroup.ElevatorFloor floor = allFloors.get(i);
+            if (floor.getWorld().equals(world) && floor.getX() == x && floor.getY() == y && floor.getZ() == z) {
+                currentFloorIndex = i;
+            } else {
                 destinations.add(floor);
             }
         }
@@ -177,8 +177,26 @@ public class ElevatorManager {
             teleportTo(player, destinations.get(0));
         } else {
             pendingDestinations.put(id, destinations);
-            showDestinationMenu(player, destinations);
+            openElevatorMenu(player, destinations, group.getName(), currentFloorIndex);
         }
+    }
+
+    private void openElevatorMenu(Player player, List<ElevatorGroup.ElevatorFloor> destinations, String groupName, int currentFloorIndex) {
+        ElevatorMenu.registerMenu(player.getUniqueId());
+        Inventory inv = ElevatorMenu.createMenu(player, destinations, groupName, currentFloorIndex);
+        player.openInventory(inv);
+        cooldowns.put(player.getUniqueId(), System.currentTimeMillis());
+    }
+
+    public void handleMenuClick(Player player, int slot) {
+        UUID id = player.getUniqueId();
+        List<ElevatorGroup.ElevatorFloor> destinations = pendingDestinations.get(id);
+        if (destinations == null) return;
+        if (slot < 0 || slot >= destinations.size()) return;
+
+        pendingDestinations.remove(id);
+        player.closeInventory();
+        teleportTo(player, destinations.get(slot));
     }
 
     private void teleportTo(Player player, ElevatorGroup.ElevatorFloor destination) {
@@ -216,79 +234,8 @@ public class ElevatorManager {
         player.getWorld().spawnParticle(Particle.PORTAL, loc.add(0, 0.5, 0), 15, 0.2, 0.3, 0.2, 0.02);
     }
 
-    private void showDestinationMenu(Player player, List<ElevatorGroup.ElevatorFloor> destinations) {
-        Component header = Component.text("§6§l✦ Teleport Menu §6§l✦")
-            .append(Component.newline())
-            .append(Component.text("§7Click a floor to teleport:").append(Component.newline()));
-
-        Component[] floorComponents = new Component[destinations.size()];
-        for (int i = 0; i < destinations.size(); i++) {
-            ElevatorGroup.ElevatorFloor floor = destinations.get(i);
-            String name = floor.getDisplayName();
-            if (name == null || name.isEmpty()) {
-                name = "Floor " + (i + 1);
-            }
-            String number = String.valueOf(i + 1);
-            String hover = floor.getWorld() + ": " + floor.getX() + ", " + floor.getY() + ", " + floor.getZ();
-            Component floorLine = Component.text("§e▸ §f" + name)
-                .hoverEvent(HoverEvent.showText(Component.text("§7" + hover + "\n§aClick to teleport")))
-                .clickEvent(ClickEvent.runCommand("/elevator go " + number))
-                .append(Component.text(" §7(" + hover + ")", NamedTextColor.DARK_GRAY))
-                .append(Component.newline());
-            floorComponents[i] = floorLine;
-        }
-
-        Component footer = Component.text("§7Click a floor name to teleport instantly.")
-            .append(Component.newline())
-            .append(Component.text("§8§oSneak again to cancel.", TextColor.color(0x555555)));
-
-        Component menu = header;
-        for (Component c : floorComponents) {
-            menu = menu.append(c);
-        }
-        menu = menu.append(footer);
-
-        player.sendMessage(menu);
-        cooldowns.put(player.getUniqueId(), System.currentTimeMillis());
-    }
-
     public boolean handleChatSelection(Player player, String message) {
-        UUID id = player.getUniqueId();
-        List<ElevatorGroup.ElevatorFloor> destinations = pendingDestinations.get(id);
-        if (destinations == null) return false;
-
-        int index;
-        try {
-            index = Integer.parseInt(message.trim()) - 1;
-        } catch (NumberFormatException e) {
-            player.sendMessage("§cInvalid selection. Type a number from the menu.");
-            return true;
-        }
-
-        if (index < 0 || index >= destinations.size()) {
-            player.sendMessage("§cInvalid floor number.");
-            return true;
-        }
-
-        pendingDestinations.remove(id);
-        teleportTo(player, destinations.get(index));
-        return true;
-    }
-
-    public void goFloor(Player player, int floorNumber) {
-        UUID id = player.getUniqueId();
-        List<ElevatorGroup.ElevatorFloor> destinations = pendingDestinations.get(id);
-        if (destinations == null) {
-            player.sendMessage("§cNo active teleporter menu. Sneak on a floor pad first.");
-            return;
-        }
-        int index = floorNumber - 1;
-        if (index < 0 || index >= destinations.size()) {
-            player.sendMessage("§cInvalid floor number: " + floorNumber + ".");
-            return;
-        }
-        pendingDestinations.remove(id);
-        teleportTo(player, destinations.get(index));
+        return false;
     }
 
     public void clearPendingDestination(UUID id) {

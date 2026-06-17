@@ -6,6 +6,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -76,12 +79,29 @@ public class ElevatorListener implements Listener {
         manager.activateTeleporter(event.getPlayer());
     }
 
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+        if (!ElevatorMenu.isElevatorMenu(player.getUniqueId())) return;
+
+        event.setCancelled(true);
+
+        int slot = event.getRawSlot();
+        if (slot < 0) return;
+
+        manager.handleMenuClick(player, slot);
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        if (!(event.getPlayer() instanceof Player player)) return;
+        if (!ElevatorMenu.isElevatorMenu(player.getUniqueId())) return;
+        ElevatorMenu.unregisterMenu(player.getUniqueId());
+        manager.clearPendingDestination(player.getUniqueId());
+    }
+
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        if (manager.handleChatSelection(event.getPlayer(), event.getMessage())) {
-            event.setCancelled(true);
-            return;
-        }
         if (manager.handleFloorNaming(event.getPlayer(), event.getMessage())) {
             event.setCancelled(true);
         }
