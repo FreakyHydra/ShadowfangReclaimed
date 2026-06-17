@@ -481,7 +481,7 @@
         <button class="nav-btn" data-view="commands">Commands</button>
         <button class="nav-btn" data-view="boards">Info Boards</button>
         <button class="nav-btn" data-view="terminal">Terminal</button>
-        <button class="nav-btn" data-view="settings">Config</button>
+        <button class="nav-btn" data-view="config">Config</button>
     </nav>
     <div class="server-status">
         <div class="status-dot"></div>
@@ -786,18 +786,28 @@
     </div>
 </div>
 
-<!-- SETTINGS -->
-<div id="view-settings" class="main">
+<div class="toast" id="toast"></div>
+
+<!-- CONFIG -->
+<div id="view-config" class="main">
     <div class="card">
-        <div class="card-title">Plugin Configuration — Hot-Reload</div>
-        <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
-            <button class="btn btn-success" onclick="saveSettings()">UPLOAD TO CORE</button>
+        <div class="card-title">Plugin Configuration Files</div>
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:1rem;">
+            <label style="font-size:0.75rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;">File:</label>
+            <select id="config-file-select" onchange="loadConfigFile()" style="flex:1;">
+                <option value="plugins/ShadowfangReclaimed/elevators.json">elevators.json — Elevator groups</option>
+                <option value="plugins/ShadowfangReclaimed/info_boards.json">info_boards.json — Info boards</option>
+                <option value="plugins/ShadowfangReclaimed/worlds.yml">worlds.yml — World registry</option>
+            </select>
+            <button class="btn btn-success" onclick="saveConfigFile()">SAVE</button>
+            <button class="btn" onclick="loadConfigFile()">REFRESH</button>
         </div>
-        <div class="settings-grid" id="settings-form">Loading...</div>
+        <div style="margin-bottom:8px;font-size:0.7rem;color:var(--text-dim);">
+            Warning: Only edit JSON/YAML files if you know what you are doing. Incorrect syntax can break features.
+        </div>
+        <textarea id="config-editor" rows="20" style="width:100%;font-family:'Share Tech Mono',monospace;font-size:0.8rem;background:rgba(0,0,0,0.6);border:1px solid var(--gold-border);color:var(--gold-light);padding:12px;resize:vertical;" placeholder="Select a file above to view and edit."></textarea>
     </div>
 </div>
-
-<div class="toast" id="toast"></div>
 
 <script>
 // NAV
@@ -811,8 +821,8 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         if (btn.dataset.view === 'worlds') loadWorlds();
         if (btn.dataset.view === 'players') loadPlayers();
         if (btn.dataset.view === 'boards') { loadBoards(); loadPrograms(); }
-        if (btn.dataset.view === 'settings') loadSettings();
         if (btn.dataset.view === 'terminal') scrollTerminal();
+        if (btn.dataset.view === 'config') loadConfigFile();
     });
 });
 
@@ -1056,58 +1066,6 @@ async function delProgram(name) {
     loadPrograms();
 }
 
-// SETTINGS
-let rawYaml = '', parsedCfg = {};
-
-async function loadSettings() {
-    const c = document.getElementById('settings-form');
-    try {
-        const r = await fetch('/config?file=plugins/ShadowfangReclaimed/config.yml');
-        if (r.ok) {
-            rawYaml = await r.text();
-            parsedCfg = jsyaml.load(rawYaml);
-            c.innerHTML = '';
-            for (const k in parsedCfg) {
-                const v = parsedCfg[k];
-                if (Array.isArray(v)) continue;
-                if (typeof v === 'object' && v !== null) {
-                    for (const sk in v) {
-                        const sv = v[sk];
-                        if (Array.isArray(sv)) continue;
-                        const path = k + '.' + sk;
-                        let inp = '';
-                        if (typeof sv === 'boolean') inp = `<input type="checkbox" id="cfg-${path}" ${sv?'checked':''}>`;
-                        else if (typeof sv === 'number') inp = `<input type="number" id="cfg-${path}" value="${sv}" step="0.01">`;
-                        else inp = `<input type="text" id="cfg-${path}" value="${sv}">`;
-                        c.innerHTML += `<div class="setting-row"><span class="setting-label">${path.replace(/\./g, ' > ')}</span>${inp}</div>`;
-                    }
-                } else {
-                    let inp = '';
-                    if (typeof v === 'boolean') inp = `<input type="checkbox" id="cfg-${k}" ${v?'checked':''}>`;
-                    else if (typeof v === 'number') inp = `<input type="number" id="cfg-${k}" value="${v}" step="0.01">`;
-                    else inp = `<input type="text" id="cfg-${k}" value="${v}">`;
-                    c.innerHTML += `<div class="setting-row"><span class="setting-label">${k}</span>${inp}</div>`;
-                }
-            }
-        }
-    } catch(e) { c.innerHTML = 'Error loading config.'; }
-}
-
-async function saveSettings() {
-    document.querySelectorAll('[id^="cfg-"]').forEach(inp => {
-        const path = inp.id.substring(4).split('.');
-        let cur = parsedCfg;
-        for (let i = 0; i < path.length - 1; i++) cur = cur[path[i]];
-        const last = path[path.length-1];
-        if (inp.type === 'checkbox') cur[last] = inp.checked;
-        else if (inp.type === 'number') cur[last] = parseFloat(inp.value);
-        else cur[last] = inp.value;
-    });
-    const newYaml = jsyaml.dump(parsedCfg);
-    const r = await fetch('/config?file=plugins/ShadowfangReclaimed/config.yml', { method: 'POST', body: newYaml });
-    toast(r.ok ? 'Configuration uploaded and hot-reloaded.' : 'Upload failed.');
-}
-
 // TERMINAL
 const consoleEl = document.getElementById('console');
 let lastLog = '';
@@ -1136,6 +1094,31 @@ function sendTerm() {
 
 function scrollTerminal() {
     consoleEl.scrollTop = consoleEl.scrollHeight;
+}
+
+// CONFIG
+async function loadConfigFile() {
+    const sel = document.getElementById('config-file-select');
+    const file = sel.value;
+    const ta = document.getElementById('config-editor');
+    ta.value = 'Loading...';
+    try {
+        const r = await fetch('/config?file=' + encodeURIComponent(file));
+        ta.value = r.ok ? await r.text() : 'Error: ' + r.status;
+    } catch(e) { ta.value = 'Error: ' + e.message; }
+}
+
+async function saveConfigFile() {
+    const sel = document.getElementById('config-file-select');
+    const file = sel.value;
+    const content = document.getElementById('config-editor').value;
+    try {
+        const r = await fetch('/config?file=' + encodeURIComponent(file), {
+            method: 'POST',
+            body: content
+        });
+        showToast(r.ok ? 'Saved: ' + file.split('/').pop() : 'Save failed: ' + r.status);
+    } catch(e) { showToast('Error: ' + e.message); }
 }
 </script>
 </body>

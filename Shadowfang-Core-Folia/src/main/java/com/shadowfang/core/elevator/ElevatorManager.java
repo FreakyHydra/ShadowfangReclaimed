@@ -232,13 +232,13 @@ public class ElevatorManager {
             String hover = floor.getWorld() + ": " + floor.getX() + ", " + floor.getY() + ", " + floor.getZ();
             Component floorLine = Component.text("§e▸ §f" + name)
                 .hoverEvent(HoverEvent.showText(Component.text("§7" + hover + "\n§aClick to teleport")))
-                .clickEvent(ClickEvent.suggestCommand(number))
+                .clickEvent(ClickEvent.runCommand("/elevator go " + number))
                 .append(Component.text(" §7(" + hover + ")", NamedTextColor.DARK_GRAY))
                 .append(Component.newline());
             floorComponents[i] = floorLine;
         }
 
-        Component footer = Component.text("§7Or type the floor number in chat.")
+        Component footer = Component.text("§7Click a floor name to teleport instantly.")
             .append(Component.newline())
             .append(Component.text("§8§oSneak again to cancel.", TextColor.color(0x555555)));
 
@@ -273,6 +273,22 @@ public class ElevatorManager {
         pendingDestinations.remove(id);
         teleportTo(player, destinations.get(index));
         return true;
+    }
+
+    public void goFloor(Player player, int floorNumber) {
+        UUID id = player.getUniqueId();
+        List<ElevatorGroup.ElevatorFloor> destinations = pendingDestinations.get(id);
+        if (destinations == null) {
+            player.sendMessage("§cNo active teleporter menu. Sneak on a floor pad first.");
+            return;
+        }
+        int index = floorNumber - 1;
+        if (index < 0 || index >= destinations.size()) {
+            player.sendMessage("§cInvalid floor number: " + floorNumber + ".");
+            return;
+        }
+        pendingDestinations.remove(id);
+        teleportTo(player, destinations.get(index));
     }
 
     public void clearPendingDestination(UUID id) {

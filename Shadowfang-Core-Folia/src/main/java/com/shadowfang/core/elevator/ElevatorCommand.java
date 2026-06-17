@@ -195,6 +195,25 @@ public class ElevatorCommand implements CommandExecutor, TabCompleter {
                 }
             }
 
+            case "go" -> {
+                if (!(sender instanceof Player player)) {
+                    sender.sendMessage("§cMust be a player.");
+                    return true;
+                }
+                if (args.length < 2) {
+                    player.sendMessage("§cUsage: /elevator go <floor_number>");
+                    return true;
+                }
+                int num;
+                try {
+                    num = Integer.parseInt(args[1]);
+                } catch (NumberFormatException e) {
+                    player.sendMessage("§cInvalid floor number.");
+                    return true;
+                }
+                manager.goFloor(player, num);
+            }
+
             case "help" -> sendHelp(sender);
 
             default -> sendHelp(sender);
@@ -236,7 +255,7 @@ public class ElevatorCommand implements CommandExecutor, TabCompleter {
         List<String> completions = new ArrayList<>();
 
         if (args.length == 1) {
-            completions.addAll(Arrays.asList("create", "assign", "remove", "list", "info", "delfloor", "namefloor", "help"));
+            completions.addAll(Arrays.asList("create", "assign", "remove", "list", "info", "delfloor", "namefloor", "go", "help"));
         } else if (args.length == 2) {
             String sub = args[0].toLowerCase();
             if (sub.equals("assign") || sub.equals("remove") || sub.equals("info") || sub.equals("delfloor") || sub.equals("namefloor")) {
