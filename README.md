@@ -1,127 +1,180 @@
 # Shadowfang Reclaimed
 
-A custom Folia 26.1.2 server plugin featuring factions, economy, bounties, lore, cross-world travel, and path building — all accessed through a unified `/sr` command system.
-
-## RosettaStone — Folia Compatibility Layer
-
-RosettaStone is the core compatibility bridge that makes non-Folia-aware plugins run on Folia's region-threaded architecture. It intercepts Bukkit scheduler, teleportation, and collection calls at runtime, routing them to the correct Folia region threads. On a standard Paper server it falls back to vanilla Bukkit — no code changes needed.
-
-**Components:**
-- `FoliaCompat` — runtime Folia detection + scheduler routing (`Bukkit.getScheduler()` → `GlobalRegionScheduler`)
-- `RegionDispatcher` — chunk-scoped task execution (`server.execute()` → per-region dispatch)
-- `FoliaPlayer` — thread-safe teleportation (`teleport()` → `teleportAsync()`)
-- `ThreadSafeCollections` — concurrent data structures
-
-**Used by:** Axiom and Worlds — third-party plugins that speak vanilla Bukkit and need translation to Folia's threading model.
-
-The `/sr` sub-plugins (factions, economy, path tools, etc.) are native Folia code and do **not** use RosettaStone.
-
-## /sr Command System
-
-All plugin commands route through a single root: `/sr <sub-plugin> <subcommand>`. Each sub-plugin has a letter key and optional word keys.
-
-| Sub-plugin | Keys | Purpose |
-|---|---|---|
-| **Faction** | `f`, `faction` | Faction creation, territory, members |
-| **Economy** | `e`, `economy` | Silver Coin balance and transfers |
-| **Bounty** | `b`, `bounty` | Bounty hunting quests |
-| **Lore** | `l`, `lore` | Faction lore archive |
-| **Road / Path** | `r`, `we`, `road`, `worldedit`, `path`, `pave` | Path building tools (WorldEdit-style) |
-| **Verse** | `v`, `verse`, `sign`, `list`, `worlds` | Cross-world travel and management |
-| **InfoBoard** | `i`, `infoboard`, `board` | Info board display terminals |
-
-**Quick shortcuts:** `/sr h` (hub), `/sr s` (spawn), `/sr w <world>` (warp), `/sr t <world>` (travel).
-
-A full command reference by category is available in-game via the web dashboard at `http://localhost:56552` > **COMMANDS** tab.
-
-**Permissions:**
-- `shadowfang.cmd` — base permission for `/sr` access (default: op)
-- `shadowfang.we.use` — access the path tools (default: op)
-- `shadowfang.we.admin` — admin path operations
-- `shadowfang.admin` — admin operations across all sub-plugins
-
-## Path Tools (WorldEdit) Plugin
-
-A Folia-safe path-paving toolset. Build a road segment by hand, capture it as a 3D pattern, then tile it by walking or pasting.
-
-**Quick start:**
-```
-/sr r wand          Get the path wand
-/sr r pos1          Set first corner (or left-click with wand)
-/sr r pos2          Set second corner (or right-click with wand)
-/sr r copy          Capture the pattern (your position = anchor)
-/sr r paste         Paste 2 blocks in front, rotated to your facing
-/sr r start         Start walk-paste (road tiles as you walk)
-/sr r stop          Stop walk-paste
-/sr r undo          Revert last paste
-```
-
-**Key features:**
-- **Template-stamping** — build once, stamp forever. The pattern follows you as you walk, rotating to match your facing.
-- **Air offsets carve terrain** — air blocks in the template clear the world, so roads tunnel through mountains.
-- **Undo support** — blocks are snapshotted before writing; `/sr r undo` restores them.
-- **Folia-safe** — all block I/O goes through `RegionScheduler.execute()`; writes are batched by chunk.
-
-## Credits &amp; Thanks
-
-- **Axiom (Moulberry)** — World editing plugin by Moulberry (https://github.com/Moulberry/AxiomPaperPlugin). Our copy has been patched for Folia 26.1.2: all non-thread-safe collections replaced with `ConcurrentHashMap`, all `Bukkit.getScheduler()` calls routed through `FoliaCompat`, all `server.execute()` calls routed through `RegionDispatcher`, and all `player.teleport()` replaced with `teleportAsync()`. 7 files modified.
-
-- **Worlds (Minecraft Worlds Plugin)** — Multi-world management plugin (https://www.spigotmc.org/resources/worlds.64947/). Made Folia-compatible through RosettaStone's scheduler routing and thread-safe world-loading wrappers.
-
-- **PaperMC / Folia** — The server platform (https://papermc.io/software/folia).
-
-If you are the creator of **Axiom** or **Worlds** and wish for your plugin (or the ported copy distributed here) to be removed, please contact FreakyHydra and it will be taken down immediately.
+A custom Folia 26.1.2 server plugin featuring factions, economy, bounties, lore, cross-world travel, and teleporters.
 
 ---
 
-## Changelog
+## Version History
 
-### /sr Command System &amp; Path Tools Plugin
-**Version:** 1.1.0 | **Date:** June 17, 2026
+| Version | Date | Notes |
+|---------|------|-------|
+| **v1.3.1** | Jun 17, 2026 | **[NEW] Elevator/Teleporter System** — Replace road builder with teleporters |
+| v1.3.0 | Jun 17, 2026 | Deprecated road builder |
+| v1.2.2 | Jun 17, 2026 | Fixed walk-paste rotation and segment length bugs |
+| v1.2.1 | Jun 17, 2026 | Fixed walk-paste rotation direction |
+| v1.2.0 | Jun 17, 2026 | Added walk-paste mode to road builder |
+| v1.1.0 | Jun 17, 2026 | InfoBoard display system added |
+| v1.0.0 | Jun 15, 2026 | Faction bell claiming system |
 
-Unified all commands under a single `/sr <sub-plugin> <subcommand>` root. Added a Folia-safe WorldEdit-style path building plugin (`com.shadowfang.core.worldedit`).
+---
 
-### Faction Bell Claiming System
-**Version:** 1.0.0 | **Date:** June 15, 2026
+## Quick Reference
 
-**How it works:**
-- Place a **Bell** anywhere to claim a territory around it
-- Craft a Bell with 8 Gold Blocks (custom recipe, no vanilla bell)
-- Only faction members can craft and place faction bells
-- Territory is permanent until the faction disbands
+### /sr Commands
 
-**Commands:**
+All commands route through `/sr <sub-plugin> <subcommand>`.
 
-| Command | Description |
-|---------|-------------|
-| `/sr f create <name>` | Create a new faction |
-| `/sr f invite <player>` | Invite a player to your faction |
-| `/sr f accept` | Accept a pending invitation |
-| `/sr f deny` | Decline a pending invitation |
-| `/sr f claim <radius>` | Claim a (2×radius+1)² chunk area around your bell (Alpha only) |
-| `/sr f info` | View faction info, hoard balance, member count |
-| `/sr f setspawn` | Set faction spawn point (Alpha only) |
-| `/sr f spawn` | Teleport to faction spawn |
-| `/sr f deposit <amount>` | Deposit Silver Coins into the faction hoard |
-| `/sr f withdraw <amount>` | Withdraw Silver Coins from the hoard (Alpha only) |
-| `/sr f promote <player>` | Promote a member (Alpha only) |
-| `/sr f demote <player>` | Demote a member (Alpha only) |
-| `/sr f kick <player>` | Kick a member (Alpha only) |
-| `/sr f leave` | Leave your faction |
-| `/sr f disband` | Dissolve your faction (Alpha only) |
+| Sub-plugin | Keys | Purpose |
+|-----------|------|---------|
+| Faction | `f`, `faction` | Factions, territory, bells |
+| Economy | `e`, `economy` | Silver Coins |
+| Bounty | `b`, `bounty` | Bounty quests |
+| Lore | `l`, `lore` | Faction lore archive |
+| **Elevator** | `el`, `elevator`, `tp` | Teleporter pads |
+| Verse | `v`, `verse`, `sign` | Cross-world travel |
+| InfoBoard | `i`, `infoboard`, `board` | Display terminals |
 
-**Protections:**
-- Territory blocks block breaking, placement, and interaction from non-members
-- Faction Bells drop themselves when broken (with PDC data preserved)
-- Admins with `shadowfang.admin` bypass all protections
+**Shortcuts:** `/sr h` (hub), `/sr s` (spawn), `/sr w <world>` (warp), `/sr t <world>` (travel).
 
-**Economy Integration:**
-- Faction hoard linked to Silver Coins economy
-- Travel costs (10 coins) waived for faction members
+**Permissions:** `shadowfang.admin` for all admin commands.
 
-**Technical:**
-- Data persists to `config/shadowfang-core/factions.json` and `faction_chunks.json`
-- Fully compatible with Folia's multi-threaded architecture
+---
+
+## [NEW] Elevator / Teleporter System (v1.3.1)
+
+Turn any block into a teleporter pad. Link pads together and sneak to teleport.
+
+### Setup
+```
+/sr elevator create tower1        Create group "tower1", get wand
+Right-click blocks with wand     Add them as teleporter floors
+/sneak on any floor             Teleport to other linked floors
+```
+
+### Commands
+```
+/sr elevator create <name>       Create group, get wand
+/sr elevator assign <name>      Get wand for existing group
+/sr elevator remove <name>        Delete entire group
+/sr elevator list                List all groups
+/sr elevator info <name>         Show floors in group
+/sr elevator delfloor <name> <#> Remove floor by number
+```
+
+### Wand Usage
+- **Right-click** — add block as floor
+- **Left-click** — remove block from group
+
+### How It Works
+- All pads with the same group name connect
+- Sneak on any pad to activate
+- Single destination → instant teleport
+- Multiple destinations → chat menu, type number to choose
+- Full effects: particles, sound, 2s invulnerability
+- 1 second cooldown between teleports
+
+---
+
+## Faction Bell System (v1.0.0)
+
+Claim territory by placing faction bells.
+
+### Crafting
+```
+8x Gold Block in a ring shape = 1 Faction Bell
+(No vanilla bell recipe used)
+```
+
+### Faction Commands
+```
+/sr f create <name>             Create faction
+/sr f invite <player>           Invite member
+/sr f accept                   Accept invite
+/sr f claim <radius>           Claim territory (Alpha only)
+/sr f info                     View faction details
+/sr f deposit <amount>         Add to faction hoard
+/sr f withdraw <amount>        Take from hoard (Alpha only)
+/sr f setspawn                 Set spawn point (Alpha only)
+/sr f spawn                   Teleport to faction spawn
+/sr f promote <player>         Promote member (Alpha only)
+/sr f demote <player>         Demote member (Alpha only)
+/sr f kick <player>           Kick member (Alpha only)
+/sr f leave                   Leave faction
+/sr f disband                 Delete faction (Alpha only)
+```
+
+### Territory Protection
+- Bell holders and faction members can build
+- Non-members cannot break, place, or interact in claimed territory
+- Bells drop as items when broken (PDC data preserved)
+- Admins with `shadowfang.admin` bypass protection
+
+---
+
+## InfoBoard Display System (v1.1.0)
+
+Place floating text displays that show dynamic information.
+
+### Commands
+```
+/sr board create <id>            Create board at your position
+/sr board remove <id>            Delete a board
+/sr board list                  List all boards
+/sr board info <id>             Show board details
+/sr board add <id> <program>    Add program to board
+/sr board move <id>             Move board to your position
+/sr board rotate <id> <deg>     Set rotation (0/90/180/270)
+/sr board nudge <id> <dir> <#> Fine-tune position
+```
+
+### Programs
+| Program | Shows |
+|---------|-------|
+| `players` | Online player count and names |
+| `factions` | Faction leaderboard by hoard balance |
+| `server` | TPS, RAM, uptime, version |
+| `clock` | Real-world time |
+| `motd` | Server MOTD |
+
+Right-click a board to cycle programs. Sneak-right-click for board info.
+
+---
+
+## Verse Cross-World Travel (v1.0.0)
+
+```
+/sr verse worlds               List all worlds
+/sr travel <world>            Teleport to world
+/sr warp <name>               Teleport to saved warp
+/sr sethome                   Set your home
+/sr home                      Teleport to home
+/sr spawn                     Teleport to world spawn
+/sr setspawn                  Set world spawn (admin)
+```
+
+---
+
+## RosettaStone Compatibility Layer
+
+Makes non-Folia plugins run on Folia's region-threaded architecture.
+
+**Components:**
+- `FoliaCompat` — Scheduler routing (Bukkit → GlobalRegionScheduler)
+- `RegionDispatcher` — Chunk-scoped task execution
+- `FoliaPlayer` — Thread-safe teleportation
+- `ThreadSafeCollections` — Concurrent data structures
+
+**Used by:** Axiom and Worlds plugins.
+
+---
+
+## Credits
+
+- **Axiom (Moulberry)** — World editing plugin, patched for Folia 26.1.2
+- **Worlds (Minecraft Worlds Plugin)** — Multi-world management via RosettaStone
+- **PaperMC / Folia** — Server platform
+
+Contact FreakyHydra to remove any ported plugin.
 
 ---
 
