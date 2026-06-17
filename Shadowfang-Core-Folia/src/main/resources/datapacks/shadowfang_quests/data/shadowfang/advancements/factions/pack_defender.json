@@ -1,0 +1,18 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:diamond_helmet"
+    },
+    "title": "\u00a7cPack Defender",
+    "description": "\u00a77Defend your faction territory from raiders",
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:factions/territory_claimed",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

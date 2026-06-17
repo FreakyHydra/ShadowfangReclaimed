@@ -1,0 +1,21 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:blaze_rod",
+      "components": {
+        "minecraft:custom_model_data": 2002
+      }
+    },
+    "title": "\u00a76Abyssal Talismans",
+    "description": "\u00a78Channel the deep \u2014 artifacts of ancient power",
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:root",
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}

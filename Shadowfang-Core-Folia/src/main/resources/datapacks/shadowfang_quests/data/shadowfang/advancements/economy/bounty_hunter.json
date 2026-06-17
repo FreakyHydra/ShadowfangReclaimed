@@ -1,0 +1,22 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:player_head",
+      "nbt": "{SkullOwner:'Shadowfang'}"
+    },
+    "title": "\u00a7eBounty Hunter",
+    "description": "\u00a77Place or collect a bounty",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:economy/root",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "function": "shadowfang:rewards/economy/bounty_hunter"
+  }
+}

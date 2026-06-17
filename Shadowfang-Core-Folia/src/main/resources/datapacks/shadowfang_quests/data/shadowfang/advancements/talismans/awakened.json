@@ -1,0 +1,25 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:blaze_rod",
+      "components": {
+        "minecraft:custom_model_data": 2003,
+        "minecraft:custom_name": "{\"text\":\"Cursed Blaze Rod\",\"color\":\"dark_red\"}"
+      }
+    },
+    "title": "\u00a74Awakened",
+    "description": "\u00a77Receive the Cursed variant when binding",
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:talismans/the_binding",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "function": "shadowfang:rewards/talismans/awakened"
+  }
+}

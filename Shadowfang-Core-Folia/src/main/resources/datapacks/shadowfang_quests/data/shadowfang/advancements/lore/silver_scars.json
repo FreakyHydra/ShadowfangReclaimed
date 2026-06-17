@@ -1,0 +1,18 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:written_book"
+    },
+    "title": "\u00a7dSilver Scars",
+    "description": "\u00a77Read the second Lost Fragment",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:lore/a_bloody_moon",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:written_book"
+    },
+    "title": "\u00a7dTorn Journal Entry",
+    "description": "\u00a77Read the fifth Lost Fragment",
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:lore/notes_on_warden",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:knowledge_book"
+    },
+    "title": "\u00a7dArchivist",
+    "description": "\u00a77Collect all 5 Lost Fragments",
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:talismans/fragment_collector",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "function": "shadowfang:rewards/talismans/archivist"
+  }
+}

@@ -1,0 +1,21 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:iron_pickaxe"
+    },
+    "title": "\u00a7bVein Walker",
+    "description": "\u00a77Break 10 ore veins using Vein mode",
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:talismans/power_of_deep",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "function": "shadowfang:rewards/talismans/vein_walker"
+  }
+}

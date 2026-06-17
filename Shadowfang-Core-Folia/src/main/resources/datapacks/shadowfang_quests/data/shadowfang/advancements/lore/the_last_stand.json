@@ -1,0 +1,18 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:written_book"
+    },
+    "title": "\u00a7dThe Last Stand",
+    "description": "\u00a77Read the third Lost Fragment",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:lore/silver_scars",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

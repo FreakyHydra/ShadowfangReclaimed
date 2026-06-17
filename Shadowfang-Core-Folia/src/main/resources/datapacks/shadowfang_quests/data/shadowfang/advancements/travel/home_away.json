@@ -1,0 +1,18 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:bedrock"
+    },
+    "title": "\u00a7aHome Away",
+    "description": "\u00a77Set and use a home warp",
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:travel/world_jumper",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

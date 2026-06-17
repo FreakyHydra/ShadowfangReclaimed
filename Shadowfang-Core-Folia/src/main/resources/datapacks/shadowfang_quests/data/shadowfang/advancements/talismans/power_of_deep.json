@@ -1,0 +1,21 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:blaze_rod",
+      "components": {
+        "minecraft:custom_model_data": 2002
+      }
+    },
+    "title": "\u00a76Power of the Deep",
+    "description": "\u00a77Hold your talisman in the off-hand",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:talismans/the_binding",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

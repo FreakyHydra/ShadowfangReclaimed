@@ -8,6 +8,9 @@ A custom Folia 26.1.2 server plugin featuring factions, economy, bounties, lore,
 
 | Version | Notes |
 |---------|-------|
+| **v1.6.1** | Fix quest datapack: propertysortorder removed, nbt→components, §→\u00a7 escape, valid JSON |
+| **v1.6.0** | Moved veinmine from Core → AbyssalTalisman plugin (standalone) |
+| **v0.1.1-alpha** | AbyssalTalisman: veinmine radius 30→5, fix block respawn desync |
 | **v1.5.2** | Veinmine fix: run synchronously, /vm shortcut for quick toggle |
 | **v1.5.1** | Web dashboard: Permissions tab, scrolling fixes, veinmining command card |
 | **v1.5.0** | **[NEW] Veinmining** — chain-mine ores and trees, look up/down for elevator direction |

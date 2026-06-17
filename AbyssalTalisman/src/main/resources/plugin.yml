@@ -1,0 +1,25 @@
+name: AbyssalTalisman
+version: '${version}'
+main: com.shadowfang.talisman.AbyssalTalismanPlugin
+api-version: '1.21'
+folia-supported: true
+description: Abyssal Talisman — artifact of the deep, channeling ancient mining power
+softdepend: [ShadowfangReclaimed]
+commands:
+  talisman:
+    description: Abyssal Talisman commands
+    usage: /talisman [bind|vault|wand|toggle|on|off|status|help]
+    aliases: [tm]
+  ta:
+    description: Quick toggle talisman veinmine or open vault
+    usage: /ta [v|vault|bind|wand]
+permissions:
+  shadowfang.talisman:
+    description: Use Abyssal Talisman commands
+    default: op
+  shadowfang.talisman.wand:
+    description: Receive an Abyssal Talisman item
+    default: op
+  shadowfang.talisman.bind:
+    description: Bind a talisman using lore fragments
+    default: op

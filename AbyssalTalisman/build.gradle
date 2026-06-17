@@ -3,7 +3,8 @@ plugins {
 }
 
 group = 'com.shadowfang'
-version = '1.6.1'
+version = '0.1.1-alpha'
+description = 'Abyssal Talisman — artifact of the deep, channeling ancient mining power'
 
 repositories {
     mavenCentral()
@@ -15,8 +16,6 @@ repositories {
 
 dependencies {
     compileOnly "dev.folia:folia-api:1.21.11-R0.1-SNAPSHOT"
-    implementation "com.google.code.gson:gson:2.10.1"
-    compileOnly files('../Borrowed/worlds/api/build/libs/api-4.2.2.jar')
 }
 
 java {

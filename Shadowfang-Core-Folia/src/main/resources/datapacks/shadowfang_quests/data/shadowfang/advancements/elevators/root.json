@@ -1,0 +1,18 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:ladder"
+    },
+    "title": "\u00a79Elevators",
+    "description": "\u00a78Teleport through space \u2014 vertically and beyond",
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:root",
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}

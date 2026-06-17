@@ -1,0 +1,18 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:gold_ingot"
+    },
+    "title": "\u00a7eEconomy",
+    "description": "\u00a78Bounties \u00b7 Trading \u00b7 Survival of the Richest",
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:root",
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:compass"
+    },
+    "title": "\u00a7bProspector",
+    "description": "\u00a77Use Prospect mode to find hidden ores",
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:talismans/earth_shaper",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "function": "shadowfang:rewards/talismans/prospector"
+  }
+}

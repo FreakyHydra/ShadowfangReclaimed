@@ -1,0 +1,21 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:gold_block"
+    },
+    "title": "\u00a7cBell Maker",
+    "description": "\u00a77Craft a Faction Bell using 8 gold blocks",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:factions/root",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "function": "shadowfang:rewards/factions/bell_maker"
+  }
+}

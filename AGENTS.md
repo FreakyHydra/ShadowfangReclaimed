@@ -12,8 +12,15 @@
 
 | Plugin | build file | Current version |
 |--------|------------|-----------------|
-| Shadowfang-Core-Folia | `Shadowfang-Core-Folia/build.gradle` | 1.5.2 |
+| Shadowfang-Core-Folia | `Shadowfang-Core-Folia/build.gradle` | 1.6.1 |
 | RosettaStone | `RosettaStone/build.gradle` | 1.0.0 |
+| AbyssalTalisman | `AbyssalTalisman/build.gradle` | 0.1.1-alpha |
+
+## Server version
+
+- **Minecraft**: 26.1.2
+- **Folia**: 26.1.2-8
+- **Folia API dependency**: `dev.folia:folia-api:1.21.11-R0.1-SNAPSHOT` (confirmed working on Folia 26.1.2-8)
 
 ## Deployment rules
 

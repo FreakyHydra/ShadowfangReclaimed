@@ -1,0 +1,21 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:nether_portal"
+    },
+    "title": "\u00a7aWorld Jumper",
+    "description": "\u00a77Travel to the Nether or End",
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:travel/verse_traveler",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "function": "shadowfang:rewards/travel/world_jumper"
+  }
+}

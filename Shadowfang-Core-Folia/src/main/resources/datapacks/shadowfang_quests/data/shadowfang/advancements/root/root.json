@@ -1,0 +1,21 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:blaze_rod",
+      "components": {
+        "minecraft:custom_model_data": 2001
+      }
+    },
+    "title": "\u00a75\u00a7lThe Shadows Call",
+    "description": "\u00a78Shadowfang Reclaimed \u00b7 Every gift demands a price",
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "background": "minecraft:textures/block/black_concrete.png"
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}

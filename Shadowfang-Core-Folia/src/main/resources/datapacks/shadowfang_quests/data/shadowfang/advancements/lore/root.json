@@ -1,0 +1,18 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:book"
+    },
+    "title": "\u00a7dLost Lore",
+    "description": "\u00a78Collect the fragments of Shadowfang's past",
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:root",
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}

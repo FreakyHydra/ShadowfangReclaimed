@@ -1,0 +1,21 @@
+﻿{
+  "display": {
+    "icon": {
+      "id": "minecraft:bell"
+    },
+    "title": "\u00a7cLoyal Member",
+    "description": "\u00a77Ring your faction bell to gather your pack",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "shadowfang:factions/bell_maker",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "function": "shadowfang:rewards/factions/loyal_member"
+  }
+}

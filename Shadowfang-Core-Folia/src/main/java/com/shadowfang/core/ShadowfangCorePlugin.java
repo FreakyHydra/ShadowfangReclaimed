@@ -18,10 +18,9 @@ import com.shadowfang.core.infoboard.InfoBoardCommand;
 import com.shadowfang.core.infoboard.InfoBoardListener;
 import com.shadowfang.core.infoboard.InfoBoardManager;
 import com.shadowfang.core.lore.LoreManager;
+import com.shadowfang.core.quest.QuestListener;
+import com.shadowfang.core.quest.QuestManager;
 import com.shadowfang.core.verse.HubManager;
-import com.shadowfang.core.veinmining.VeinMineCommand;
-import com.shadowfang.core.veinmining.VeinMineListener;
-import com.shadowfang.core.veinmining.VeinMineManager;
 import com.shadowfang.core.verse.SignClickListener;
 import com.shadowfang.core.verse.TeleportManager;
 import com.shadowfang.core.verse.VerseManager;
@@ -46,7 +45,7 @@ public class ShadowfangCorePlugin extends JavaPlugin {
     private com.shadowfang.core.terminal.WebTerminalServer webTerminalServer;
     private InfoBoardManager infoBoardManager;
     private ElevatorManager elevatorManager;
-    private VeinMineManager veinMineManager;
+    private QuestManager questManager;
 
     @Override
     public void onEnable() {
@@ -98,10 +97,9 @@ public class ShadowfangCorePlugin extends JavaPlugin {
         ElevatorCommand elevatorCmd = new ElevatorCommand(elevatorManager, this);
         getServer().getPluginManager().registerEvents(new ElevatorListener(elevatorManager, this), this);
 
-        // --- Initialize VeinMining ---
-        veinMineManager = new VeinMineManager();
-        VeinMineCommand veinMineCmd = new VeinMineCommand(veinMineManager);
-        getServer().getPluginManager().registerEvents(new VeinMineListener(veinMineManager), this);
+        // --- Initialize Quest System ---
+        questManager = new QuestManager(this);
+        getServer().getPluginManager().registerEvents(new QuestListener(this, questManager), this);
 
         // --- Verse sub-plugin ---
         VerseCommand verseCmd = new VerseCommand(teleportManager);
@@ -114,9 +112,6 @@ public class ShadowfangCorePlugin extends JavaPlugin {
         sr.register(loreCommand, "l", "lore");
         sr.registerPerm(boardCmd, "shadowfang.admin", "i", "infoboard", "board");
         sr.registerPerm(elevatorCmd, "shadowfang.admin", "el", "elevator", "tp");
-        sr.registerPermDef(veinMineCmd, "shadowfang.admin", new String[]{"toggle"}, "vm", "veinmine");
-        getCommand("vm").setExecutor(veinMineCmd);
-        getCommand("vm").setTabCompleter(veinMineCmd);
         sr.register(verseCmd, "v", "verse", "sign", "list", "worlds");
         sr.registerDef(verseCmd, new String[]{"travel"}, "t", "travel");
         sr.registerDef(verseCmd, new String[]{"hub"}, "h", "hub");
@@ -187,5 +182,5 @@ public class ShadowfangCorePlugin extends JavaPlugin {
     public VerseManager getVerseManager() { return verseManager; }
     public InfoBoardManager getInfoBoardManager() { return infoBoardManager; }
     public ElevatorManager getElevatorManager() { return elevatorManager; }
-    public VeinMineManager getVeinMineManager() { return veinMineManager; }
+    public QuestManager getQuestManager() { return questManager; }
 }
