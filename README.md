@@ -8,8 +8,8 @@ A custom Folia 26.1.2 server plugin featuring factions, economy, bounties, lore,
 
 | Version | Notes |
 |---------|-------|
+| **v1.5.1** | Web dashboard: Permissions tab, scrolling fixes, veinmining command card |
 | **v1.5.0** | **[NEW] Veinmining** — chain-mine ores and trees, look up/down for elevator direction |
-| **v1.4.2** | Elevator GUI menu, directional sneak (look up/down to choose floor) |
 | v1.3.1 | Jun 17, 2026 | Elevator/Teleporter System replaces road builder |
 | v1.3.0 | Jun 17, 2026 | Deprecated road builder |
 | v1.2.2 | Jun 17, 2026 | Fixed walk-paste rotation and segment length bugs |
@@ -35,10 +35,19 @@ All commands route through `/sr <sub-plugin> <subcommand>`.
 | **Elevator** | `el`, `elevator`, `tp` | Teleporter pads |
 | Verse | `v`, `verse`, `sign` | Cross-world travel |
 | InfoBoard | `i`, `infoboard`, `board` | Display terminals |
+| Veinmining | `vm`, `veinmine` | Chain-mine ores and trees |
 
 **Shortcuts:** `/sr h` (hub), `/sr s` (spawn), `/sr w <world>` (warp), `/sr t <world>` (travel).
 
 **Permissions:** `shadowfang.admin` for all admin commands.
+
+### Permission Reference
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `shadowfang.admin` | Full admin — elevator, info boards, veinmining, verse admin commands | OP |
+| `shadowfang.cmd` | Access `/sr` command root | OP |
+| `shadowfang.we.use` | Use path building tools | OP |
+| `shadowfang.we.admin` | Admin path tools | OP |
 
 ---
 
@@ -51,10 +60,11 @@ Live web control panel at **http://localhost:56552** (starts automatically on se
 - **Teleporters** — Manage elevator groups, view floors, delete groups (full CRUD)
 - **Dimensions** — List worlds, teleport yourself, create new worlds
 - **Entities** — View online players with ping, heal/feed/kick actions
-- **Commands** — Expandable card reference for all `/sr` commands
+- **Commands** — Expandable card reference for all `/sr` commands (including veinmining)
 - **Info Boards** — Manage display terminals and custom programs
 - **Terminal** — Live server log viewer with command execution
-- **Config** — View and edit plugin config files (elevators.json, info_boards.json, worlds.yml) |
+- **Config** — View and edit plugin config files (elevators.json, info_boards.json, worlds.yml)
+- **Permissions** — Permission reference table and command → permission map
 
 ### Theme
 Black and gold glassmorphic design with card animations, hover effects, and a cohesive cyberpunk aesthetic.

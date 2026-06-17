@@ -117,7 +117,7 @@
             flex-direction: column;
             gap: 1.2rem;
         }
-        .main.active { display: flex; }
+        .main.active { display: flex; min-height: 0; }
 
         /* SCROLLBAR */
         ::-webkit-scrollbar { width: 6px; }
@@ -261,7 +261,15 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
         }
+        .cmd-card-body {
+            max-height: 0;
+            overflow-y: auto;
+            transition: max-height 0.35s ease;
+        }
+        .cmd-card.open .cmd-card-body { max-height: 400px; }
         .cmd-card {
             background: var(--bg-card);
             border: 1px solid var(--gold-border);
@@ -295,12 +303,6 @@
         .cmd-card-alias { font-size: 0.65rem; color: var(--text-dim); margin-top: 2px; }
         .cmd-toggle { color: var(--gold); font-size: 0.8rem; transition: transform 0.3s ease; }
         .cmd-card.open .cmd-toggle { transform: rotate(180deg); }
-        .cmd-card-body {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.35s ease;
-        }
-        .cmd-card.open .cmd-card-body { max-height: 600px; }
         .cmd-table { width: 100%; }
         .cmd-table th { padding: 8px 16px; font-size: 0.65rem; }
         .cmd-table td { padding: 7px 16px; font-size: 0.75rem; }
@@ -482,6 +484,7 @@
         <button class="nav-btn" data-view="boards">Info Boards</button>
         <button class="nav-btn" data-view="terminal">Terminal</button>
         <button class="nav-btn" data-view="config">Config</button>
+        <button class="nav-btn" data-view="perms">Perms</button>
     </nav>
     <div class="server-status">
         <div class="status-dot"></div>
@@ -744,6 +747,29 @@
                 </div>
             </div>
 
+            <div class="cmd-card" data-category="veinmining">
+                <div class="cmd-card-header" onclick="toggleCmdCard(this)">
+                    <div>
+                        <div class="cmd-card-title">Veinmining</div>
+                        <div class="cmd-card-alias">/sr vm | /sr veinmine</div>
+                    </div>
+                    <div class="cmd-toggle">&#9660;</div>
+                </div>
+                <div class="cmd-card-body">
+                    <table class="cmd-table"><thead><tr><th>Command</th><th>Description</th></tr></thead><tbody>
+<tr><td class="cmd-name">[no args]</td><td class="cmd-desc">Show veinmining status</td></tr>
+<tr><td class="cmd-name">toggle</td><td class="cmd-desc">Enable or disable veinmining</td></tr>
+<tr><td class="cmd-name">on</td><td class="cmd-desc">Turn veinmining on</td></tr>
+<tr><td class="cmd-name">off</td><td class="cmd-desc">Turn veinmining off</td></tr>
+<tr><td class="cmd-name">status</td><td class="cmd-desc">Check if veinmining is on/off</td></tr>
+                    </tbody></table>
+                    <div style="padding:8px 16px 12px;font-size:0.7rem;color:var(--text-dim);">
+                        Break an ore or tree log to chain-mine all connected blocks within 30 blocks.<br>
+                        Tool durability is consumed per block. Blacklist enforced.
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -788,6 +814,51 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- PERMISSIONS -->
+<div id="view-perms" class="main">
+    <div class="card">
+        <div class="card-title">Server Permissions</div>
+        <div class="search-bar">
+            <input type="text" id="perm-search" placeholder="Filter permissions..." oninput="filterPerms()">
+        </div>
+        <table id="perms-table">
+            <thead><tr><th>Permission</th><th>Description</th><th>Default</th></tr></thead>
+            <tbody>
+                <tr><td class="cmd-name">shadowfang.admin</td><td class="cmd-desc">Full admin access — all /sr admin commands, elevator, info boards, veinmining</td><td><span class="cmd-tag tag-admin">OP</span></td></tr>
+                <tr><td class="cmd-name">shadowfang.cmd</td><td class="cmd-desc">Access /sr command root (all sub-commands route through this)</td><td><span class="cmd-tag tag-admin">OP</span></td></tr>
+                <tr><td class="cmd-name">shadowfang.we.use</td><td class="cmd-desc">Use path building tools</td><td><span class="cmd-tag tag-admin">OP</span></td></tr>
+                <tr><td class="cmd-name">shadowfang.we.admin</td><td class="cmd-desc">Admin path tool access (builder mode, etc.)</td><td><span class="cmd-tag tag-admin">OP</span></td></tr>
+            </tbody>
+        </table>
+        <div style="margin-top:1rem;font-size:0.7rem;color:var(--text-dim);">
+            Permissions are set via server plugins or permission managers (LuckPerms, PermissionsEx, etc.).<br>
+            Default: <span class="cmd-tag tag-admin">OP</span> = Operators only, <span class="cmd-tag" style="background:rgba(39,174,96,0.15);color:#2ecc71;border:1px solid rgba(39,174,96,0.3);">TRUE</span> = Everyone
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-title">Command → Permission Map</div>
+        <table>
+            <thead><tr><th>Command</th><th>Permission</th><th>Required</th></tr></thead>
+            <tbody>
+                <tr><td class="cmd-name">/sr elevator *</td><td class="cmd-name">shadowfang.admin</td><td><span class="cmd-tag tag-admin">YES</span></td></tr>
+                <tr><td class="cmd-name">/sr infoboard *</td><td class="cmd-name">shadowfang.admin</td><td><span class="cmd-tag tag-admin">YES</span></td></tr>
+                <tr><td class="cmd-name">/sr veinmine *</td><td class="cmd-name">shadowfang.admin</td><td><span class="cmd-tag tag-admin">YES</span></td></tr>
+                <tr><td class="cmd-name">/sr lore spawnbook</td><td class="cmd-name">shadowfang.admin</td><td><span class="cmd-tag tag-admin">YES</span></td></tr>
+                <tr><td class="cmd-name">/sr verse create|sign|remove</td><td class="cmd-name">shadowfang.admin</td><td><span class="cmd-tag tag-admin">YES</span></td></tr>
+                <tr><td class="cmd-name">/sr faction claim|setspawn|disband|withdraw</td><td class="cmd-name">shadowfang.cmd</td><td><span class="cmd-tag tag-admin">YES</span></td></tr>
+                <tr><td class="cmd-name">/sr faction *</td><td class="cmd-name">shadowfang.cmd</td><td><span class="cmd-tag tag-admin">YES</span></td></tr>
+                <tr><td class="cmd-name">/sr economy *</td><td class="cmd-name">shadowfang.cmd</td><td><span class="cmd-tag tag-admin">YES</span></td></tr>
+                <tr><td class="cmd-name">/sr bounty *</td><td class="cmd-name">shadowfang.cmd</td><td><span class="cmd-tag tag-admin">YES</span></td></tr>
+                <tr><td class="cmd-name">/sr lore *</td><td class="cmd-name">shadowfang.cmd</td><td><span class="cmd-tag tag-admin">YES</span></td></tr>
+                <tr><td class="cmd-name">/sr h / hub</td><td class="cmd-name">shadowfang.cmd</td><td><span class="cmd-tag tag-admin">YES</span></td></tr>
+                <tr><td class="cmd-name">/sr s / spawn</td><td class="cmd-name">shadowfang.cmd</td><td><span class="cmd-tag tag-admin">YES</span></td></tr>
+                <tr><td class="cmd-name">/sr w / warp</td><td class="cmd-name">shadowfang.cmd</td><td><span class="cmd-tag tag-admin">YES</span></td></tr>
+                <tr><td class="cmd-name">/sr t / travel</td><td class="cmd-name">shadowfang.cmd</td><td><span class="cmd-tag tag-admin">YES</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <!-- CONFIG -->
 <div id="view-config" class="main">
     <div class="card">
@@ -823,6 +894,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         if (btn.dataset.view === 'boards') { loadBoards(); loadPrograms(); }
         if (btn.dataset.view === 'terminal') scrollTerminal();
         if (btn.dataset.view === 'config') loadConfigFile();
+        if (btn.dataset.view === 'perms') filterPerms();
     });
 });
 
@@ -1096,6 +1168,20 @@ function scrollTerminal() {
     consoleEl.scrollTop = consoleEl.scrollHeight;
 }
 
+// PERMISSIONS
+function filterPerms() {
+    const q = document.getElementById('perm-search').value.toLowerCase();
+    const rows = document.querySelectorAll('#perms-table tbody tr, #perms-table + div + table tbody tr');
+    document.querySelectorAll('#perms-table tbody tr').forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(q) ? '' : 'none';
+    });
+    document.querySelectorAll('#view-perms .card:last-child table tbody tr').forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(q) ? '' : 'none';
+    });
+}
+
 // CONFIG
 async function loadConfigFile() {
     const sel = document.getElementById('config-file-select');
@@ -1117,8 +1203,8 @@ async function saveConfigFile() {
             method: 'POST',
             body: content
         });
-        showToast(r.ok ? 'Saved: ' + file.split('/').pop() : 'Save failed: ' + r.status);
-    } catch(e) { showToast('Error: ' + e.message); }
+        toast(r.ok ? 'Saved: ' + file.split('/').pop() : 'Save failed: ' + r.status);
+    } catch(e) { toast('Error: ' + e.message); }
 }
 </script>
 </body>
