@@ -12,7 +12,7 @@
 
 | Plugin | build file | Current version |
 |--------|------------|-----------------|
-| Shadowfang-Core-Folia | `Shadowfang-Core-Folia/build.gradle` | 1.4.0 |
+| Shadowfang-Core-Folia | `Shadowfang-Core-Folia/build.gradle` | 1.4.2 |
 | RosettaStone | `RosettaStone/build.gradle` | 1.0.0 |
 
 ## Deployment rules
@@ -68,7 +68,7 @@ Remove-Item ../foliaserver/plugins/Shadowfang-Core-Folia-1.3.2.jar
 Copy-Item build/libs/Shadowfang-Core-Folia-1.3.3.jar ../foliaserver/plugins/
 
 # Commit & Push
-git add Shadowfang-Core-Folia/build.gradle Shadowfang-Core-Folia/src/main/java/...
+git add Shadowfang-Core-Folia/build.gradle Shadowfang-Core-Folia/src/main/java/... README.md
 git commit -m "v1.3.3: Fix Y-offset bug in elevator teleport
 
 - Elevator: teleport now uses y+1 so players spawn on top of floor blocks
@@ -91,6 +91,7 @@ Run through this checklist for every deployment:
 - [ ] User confirms deployment working
 - [ ] **Commit** with descriptive message including changelog
 - [ ] **Push** to GitHub
+- [ ] **Update README.md** version history and any changed feature docs before pushing
 
 ## Handling Deferred Issues
 
