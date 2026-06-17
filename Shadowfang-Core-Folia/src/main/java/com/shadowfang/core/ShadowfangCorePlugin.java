@@ -8,6 +8,9 @@ import com.shadowfang.core.commands.EconomyCommand;
 import com.shadowfang.core.commands.FactionCommand;
 import com.shadowfang.core.commands.LoreCommand;
 import com.shadowfang.core.economy.EconomyManager;
+import com.shadowfang.core.elevator.ElevatorCommand;
+import com.shadowfang.core.elevator.ElevatorListener;
+import com.shadowfang.core.elevator.ElevatorManager;
 import com.shadowfang.core.events.*;
 import com.shadowfang.core.faction.FactionManager;
 import com.shadowfang.core.infoboard.BuiltinPrograms;
@@ -19,9 +22,6 @@ import com.shadowfang.core.verse.HubManager;
 import com.shadowfang.core.verse.SignClickListener;
 import com.shadowfang.core.verse.TeleportManager;
 import com.shadowfang.core.verse.VerseManager;
-import com.shadowfang.core.worldedit.WorldEditCommand;
-import com.shadowfang.core.worldedit.WorldEditListener;
-import com.shadowfang.core.worldedit.WorldEditManager;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -42,7 +42,7 @@ public class ShadowfangCorePlugin extends JavaPlugin {
     private VerseManager verseManager;
     private com.shadowfang.core.terminal.WebTerminalServer webTerminalServer;
     private InfoBoardManager infoBoardManager;
-    private WorldEditManager worldEditManager;
+    private ElevatorManager elevatorManager;
 
     @Override
     public void onEnable() {
@@ -88,10 +88,11 @@ public class ShadowfangCorePlugin extends JavaPlugin {
         InfoBoardCommand boardCmd = new InfoBoardCommand(this, infoBoardManager);
         getServer().getPluginManager().registerEvents(new InfoBoardListener(this, infoBoardManager), this);
 
-        // --- Initialize WorldEdit / Path Tools ---
-        worldEditManager = new WorldEditManager(this);
-        WorldEditCommand weCmd = new WorldEditCommand(worldEditManager);
-        getServer().getPluginManager().registerEvents(new WorldEditListener(worldEditManager), this);
+        // --- Initialize Elevator / Teleporter System ---
+        elevatorManager = new ElevatorManager(this);
+        elevatorManager.load();
+        ElevatorCommand elevatorCmd = new ElevatorCommand(elevatorManager, this);
+        getServer().getPluginManager().registerEvents(new ElevatorListener(elevatorManager, this), this);
 
         // --- Verse sub-plugin ---
         VerseCommand verseCmd = new VerseCommand(teleportManager);
@@ -102,8 +103,8 @@ public class ShadowfangCorePlugin extends JavaPlugin {
         sr.register(economyCommand, "e", "economy");
         sr.register(bountyCommand, "b", "bounty");
         sr.register(loreCommand, "l", "lore");
-        sr.registerPerm(weCmd, "shadowfang.we.use", "r", "we", "worldedit", "road", "path", "pave");
         sr.registerPerm(boardCmd, "shadowfang.admin", "i", "infoboard", "board");
+        sr.registerPerm(elevatorCmd, "shadowfang.admin", "el", "elevator", "tp");
         sr.register(verseCmd, "v", "verse", "sign", "list", "worlds");
         sr.registerDef(verseCmd, new String[]{"travel"}, "t", "travel");
         sr.registerDef(verseCmd, new String[]{"hub"}, "h", "hub");
@@ -139,6 +140,9 @@ public class ShadowfangCorePlugin extends JavaPlugin {
         if (infoBoardManager != null) {
             infoBoardManager.shutdown();
         }
+        if (elevatorManager != null) {
+            elevatorManager.save();
+        }
         if (webTerminalServer != null) {
             webTerminalServer.stop();
         }
@@ -170,5 +174,5 @@ public class ShadowfangCorePlugin extends JavaPlugin {
     public TeleportManager getTeleportManager() { return teleportManager; }
     public VerseManager getVerseManager() { return verseManager; }
     public InfoBoardManager getInfoBoardManager() { return infoBoardManager; }
-    public WorldEditManager getWorldEditManager() { return worldEditManager; }
+    public ElevatorManager getElevatorManager() { return elevatorManager; }
 }
