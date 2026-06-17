@@ -8,6 +8,7 @@ A custom Folia 26.1.2 server plugin featuring factions, economy, bounties, lore,
 
 | Version | Notes |
 |---------|-------|
+| **v1.5.2** | Veinmine fix: run synchronously, /vm shortcut for quick toggle |
 | **v1.5.1** | Web dashboard: Permissions tab, scrolling fixes, veinmining command card |
 | **v1.5.0** | **[NEW] Veinmining** — chain-mine ores and trees, look up/down for elevator direction |
 | v1.3.1 | Jun 17, 2026 | Elevator/Teleporter System replaces road builder |
@@ -35,7 +36,7 @@ All commands route through `/sr <sub-plugin> <subcommand>`.
 | **Elevator** | `el`, `elevator`, `tp` | Teleporter pads |
 | Verse | `v`, `verse`, `sign` | Cross-world travel |
 | InfoBoard | `i`, `infoboard`, `board` | Display terminals |
-| Veinmining | `vm`, `veinmine` | Chain-mine ores and trees |
+| Veinmining | `vm`, `veinmine` | Chain-mine ores and trees (`/vm` = quick toggle) |
 
 **Shortcuts:** `/sr h` (hub), `/sr s` (spawn), `/sr w <world>` (warp), `/sr t <world>` (travel).
 

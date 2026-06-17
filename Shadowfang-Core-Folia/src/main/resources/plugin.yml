@@ -9,6 +9,9 @@ commands:
   sr:
     description: Shadowfang Reclaimed command root
     usage: /sr <sub-plugin> <subcommand>
+  vm:
+    description: Quick toggle veinmining
+    usage: /vm
 permissions:
   shadowfang.cmd:
     description: Access /sr commands

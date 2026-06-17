@@ -1,29 +1,23 @@
 package com.shadowfang.core.veinmining;
 
-import com.shadowfang.core.ShadowfangCorePlugin;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
 public class VeinMineManager {
 
     private static final int RADIUS = 30;
-    private static final int LEAF_RADIUS = 4;
     private static final Set<Material> BLACKLIST = EnumSet.noneOf(Material.class);
 
     static {
         BLACKLIST.add(Material.BEDROCK);
         BLACKLIST.add(Material.OBSIDIAN);
         BLACKLIST.add(Material.SPAWNER);
-        BLACKLIST.add(Material.SHULKER_BOX);
         BLACKLIST.add(Material.SHULKER_BOX);
         BLACKLIST.add(Material.ENDER_CHEST);
         BLACKLIST.add(Material.BEACON);
@@ -41,13 +35,9 @@ public class VeinMineManager {
         BLACKLIST.add(Material.REPEATING_COMMAND_BLOCK);
     }
 
-    private final ShadowfangCorePlugin plugin;
     private final Set<UUID> enabledPlayers = new HashSet<>();
-    private final Set<UUID> cooldowns = new HashSet<>();
 
-    public VeinMineManager(ShadowfangCorePlugin plugin) {
-        this.plugin = plugin;
-    }
+    public VeinMineManager() {}
 
     public boolean isEnabled(Player player) {
         return enabledPlayers.contains(player.getUniqueId());
@@ -70,15 +60,7 @@ public class VeinMineManager {
         UUID id = player.getUniqueId();
         if (!enabledPlayers.contains(id)) return;
 
-        if (cooldowns.contains(id)) return;
-        cooldowns.add(id);
-        Bukkit.getGlobalRegionScheduler().execute(plugin, () -> {
-            try {
-                mineVein(player, block, tool);
-            } finally {
-                cooldowns.remove(id);
-            }
-        });
+        mineVein(player, block, tool);
     }
 
     private void mineVein(Player player, Block startBlock, ItemStack tool) {

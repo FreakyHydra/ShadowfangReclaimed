@@ -99,7 +99,7 @@ public class ShadowfangCorePlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ElevatorListener(elevatorManager, this), this);
 
         // --- Initialize VeinMining ---
-        veinMineManager = new VeinMineManager(this);
+        veinMineManager = new VeinMineManager();
         VeinMineCommand veinMineCmd = new VeinMineCommand(veinMineManager);
         getServer().getPluginManager().registerEvents(new VeinMineListener(veinMineManager), this);
 
@@ -114,7 +114,9 @@ public class ShadowfangCorePlugin extends JavaPlugin {
         sr.register(loreCommand, "l", "lore");
         sr.registerPerm(boardCmd, "shadowfang.admin", "i", "infoboard", "board");
         sr.registerPerm(elevatorCmd, "shadowfang.admin", "el", "elevator", "tp");
-        sr.registerPerm(veinMineCmd, "shadowfang.admin", "vm", "veinmine");
+        sr.registerPermDef(veinMineCmd, "shadowfang.admin", new String[]{"toggle"}, "vm", "veinmine");
+        getCommand("vm").setExecutor(veinMineCmd);
+        getCommand("vm").setTabCompleter(veinMineCmd);
         sr.register(verseCmd, "v", "verse", "sign", "list", "worlds");
         sr.registerDef(verseCmd, new String[]{"travel"}, "t", "travel");
         sr.registerDef(verseCmd, new String[]{"hub"}, "h", "hub");

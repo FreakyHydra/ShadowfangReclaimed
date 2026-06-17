@@ -34,7 +34,7 @@ public class VeinMineCommand implements CommandExecutor, TabCompleter {
         if (args.length == 0) {
             boolean enabled = manager.isEnabled(player);
             player.sendMessage("§6§lVeinmining §7— " + (enabled ? "§aENABLED" : "§cDISABLED") + " §7| Break a block to mine its vein (30 block radius)");
-            player.sendMessage("§7Type §e/sr veinmine toggle §7to " + (enabled ? "disable" : "enable") + ".");
+            player.sendMessage("§7Quick toggle: §e/vm §7or §e/sr vm");
             return true;
         }
 
