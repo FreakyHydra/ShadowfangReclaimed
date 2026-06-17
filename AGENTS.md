@@ -41,24 +41,56 @@
 4. Verify port 25565 is free: `Get-NetTCPConnection -LocalPort 25565` returns nothing
 5. Delete old JAR versions from `foliaserver/plugins/` to avoid "Ambiguous plugin name" errors
 6. Copy the new JAR from `build/libs/<name>-<version>.jar` to `foliaserver/plugins/`
-7. Start the server with `start.bat`
+7. **Do NOT start the server** — leave it stopped. The user will start it themselves.
+8. After deployment is confirmed working, **commit and push** to GitHub:
+   ```
+   git add <changed files>
+   git commit -m "<version>: <brief description>
+
+   - <change 1>
+   - <change 2>
+   - ..."
+   git push
+   ```
 
 ### Example (Shadowfang-Core-Folia)
 
 ```
 # Edit: Shadowfang-Core-Folia/build.gradle  line 6
-  version = '1.1.0'  →  version = '1.2.0'
+  version = '1.3.2'  →  version = '1.3.3'
 
 # Build
 cd Shadowfang-Core-Folia
 ./gradlew jar
 
-# Deploy
-Copy-Item build/libs/Shadowfang-Core-Folia-1.3.1.jar -Destination ../foliaserver/plugins/
+# Deploy (server must already be stopped)
+Remove-Item ../foliaserver/plugins/Shadowfang-Core-Folia-1.3.2.jar
+Copy-Item build/libs/Shadowfang-Core-Folia-1.3.3.jar ../foliaserver/plugins/
 
-# Reload server
-foliaserver> reload confirm
+# Commit & Push
+git add Shadowfang-Core-Folia/build.gradle Shadowfang-Core-Folia/src/main/java/...
+git commit -m "v1.3.3: Fix Y-offset bug in elevator teleport
+
+- Elevator: teleport now uses y+1 so players spawn on top of floor blocks
+- ..."
+git push
 ```
+
+## Deployment Checklist
+
+Run through this checklist for every deployment:
+
+- [ ] Edit version in `build.gradle`
+- [ ] Run `./gradlew jar --console=plain` — verify BUILD SUCCESSFUL
+- [ ] Stop server via `stop` command in console
+- [ ] Wait 5 seconds for saves to complete
+- [ ] Verify port 25565 is free (`Get-NetTCPConnection -LocalPort 25565` returns nothing)
+- [ ] Delete old JAR versions from `foliaserver/plugins/`
+- [ ] Copy new JAR to `foliaserver/plugins/`
+- [ ] **Do NOT start the server** — leave it stopped
+- [ ] User confirms deployment working
+- [ ] **Commit** with descriptive message including changelog
+- [ ] **Push** to GitHub
 
 ## Handling Deferred Issues
 
