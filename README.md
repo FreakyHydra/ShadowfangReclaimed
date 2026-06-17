@@ -8,6 +8,8 @@ A custom Folia 26.1.2 server plugin featuring factions, economy, bounties, lore,
 
 | Version | Date | Notes |
 |---------|------|-------|
+| **v1.4.2** | Jun 17, 2026 | **[NEW] Elevator GUI menu** — chest-based teleporter, sneak to open, click to teleport instantly |
+| **v1.4.1** | Jun 17, 2026 | Direct click-to-teleport for elevators |
 | **v1.4.0** | Jun 17, 2026 | **[NEW] Gold glassmorphic web dashboard**, clickable elevator menus, floor naming |
 | v1.3.1 | Jun 17, 2026 | Elevator/Teleporter System replaces road builder |
 | v1.3.0 | Jun 17, 2026 | Deprecated road builder |
@@ -53,7 +55,7 @@ Live web control panel at **http://localhost:56552** (starts automatically on se
 - **Commands** — Expandable card reference for all `/sr` commands
 - **Info Boards** — Manage display terminals and custom programs
 - **Terminal** — Live server log viewer with command execution
-- **Config** — View and hot-reload `config.yml`
+- **Config** — View and edit plugin config files (elevators.json, info_boards.json, worlds.yml) |
 
 ### Theme
 Black and gold glassmorphic design with card animations, hover effects, and a cohesive cyberpunk aesthetic.
@@ -91,7 +93,7 @@ Right-click blocks with wand     Add them as floors (type name in chat)
 - All pads with the same group name connect
 - Sneak on any pad to activate
 - Single destination → instant teleport
-- Multiple destinations → clickable chat menu (click a floor name to select)
+- Multiple destinations → chest GUI menu (click floor item to teleport instantly)
 - Full effects: particles, sound, resistance potion
 - 1 second cooldown between teleports
 - Floors spawn players on top of the block (not inside)
