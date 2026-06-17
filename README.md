@@ -6,11 +6,11 @@ A custom Folia 26.1.2 server plugin featuring factions, economy, bounties, lore,
 
 ## Version History
 
-| Version | Date | Notes |
-|---------|------|-------|
-| **v1.4.2** | Jun 17, 2026 | **[NEW] Elevator GUI menu** — chest-based teleporter, sneak to open, click to teleport instantly |
-| **v1.4.1** | Jun 17, 2026 | Direct click-to-teleport for elevators |
-| **v1.4.0** | Jun 17, 2026 | **[NEW] Gold glassmorphic web dashboard**, clickable elevator menus, floor naming |
+| Version | Notes |
+|---------|-------|
+| **v1.4.2** | **[NEW] Elevator GUI menu** — chest-based teleporter, sneak to open, click to teleport instantly |
+| **v1.4.1** | Direct click-to-teleport for elevators |
+| **v1.4.0** | **[NEW] Gold glassmorphic web dashboard**, clickable elevator menus, floor naming |
 | v1.3.1 | Jun 17, 2026 | Elevator/Teleporter System replaces road builder |
 | v1.3.0 | Jun 17, 2026 | Deprecated road builder |
 | v1.2.2 | Jun 17, 2026 | Fixed walk-paste rotation and segment length bugs |
