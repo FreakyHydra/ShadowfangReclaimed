@@ -8,7 +8,8 @@ A custom Folia 26.1.2 server plugin featuring factions, economy, bounties, lore,
 
 | Version | Date | Notes |
 |---------|------|-------|
-| **v1.3.1** | Jun 17, 2026 | **[NEW] Elevator/Teleporter System** — Replace road builder with teleporters |
+| **v1.4.0** | Jun 17, 2026 | **[NEW] Gold glassmorphic web dashboard**, clickable elevator menus, floor naming |
+| v1.3.1 | Jun 17, 2026 | Elevator/Teleporter System replaces road builder |
 | v1.3.0 | Jun 17, 2026 | Deprecated road builder |
 | v1.2.2 | Jun 17, 2026 | Fixed walk-paste rotation and segment length bugs |
 | v1.2.1 | Jun 17, 2026 | Fixed walk-paste rotation direction |
@@ -40,6 +41,25 @@ All commands route through `/sr <sub-plugin> <subcommand>`.
 
 ---
 
+## [NEW] Web Dashboard (v1.4.0)
+
+Live web control panel at **http://localhost:56552** (starts automatically on server boot).
+
+### Features
+- **Telemetry** — Live TPS, RAM usage, online players
+- **Teleporters** — Manage elevator groups, view floors, delete groups (full CRUD)
+- **Dimensions** — List worlds, teleport yourself, create new worlds
+- **Entities** — View online players with ping, heal/feed/kick actions
+- **Commands** — Expandable card reference for all `/sr` commands
+- **Info Boards** — Manage display terminals and custom programs
+- **Terminal** — Live server log viewer with command execution
+- **Config** — View and hot-reload `config.yml`
+
+### Theme
+Black and gold glassmorphic design with card animations, hover effects, and a cohesive cyberpunk aesthetic.
+
+---
+
 ## [NEW] Elevator / Teleporter System (v1.3.1)
 
 Turn any block into a teleporter pad. Link pads together and sneak to teleport.
@@ -47,7 +67,8 @@ Turn any block into a teleporter pad. Link pads together and sneak to teleport.
 ### Setup
 ```
 /sr elevator create tower1        Create group "tower1", get wand
-Right-click blocks with wand     Add them as teleporter floors
+Right-click blocks with wand     Add them as floors (type name in chat)
+/sr elevator namefloor <name> <#> Rename a floor
 /sneak on any floor             Teleport to other linked floors
 ```
 
@@ -59,19 +80,21 @@ Right-click blocks with wand     Add them as teleporter floors
 /sr elevator list                List all groups
 /sr elevator info <name>         Show floors in group
 /sr elevator delfloor <name> <#> Remove floor by number
+/sr elevator namefloor <name> <#> <display>  Rename a floor
 ```
 
 ### Wand Usage
-- **Right-click** — add block as floor
+- **Right-click** — add block as floor (prompts for floor name in chat, type "skip" for no name)
 - **Left-click** — remove block from group
 
 ### How It Works
 - All pads with the same group name connect
 - Sneak on any pad to activate
 - Single destination → instant teleport
-- Multiple destinations → chat menu, type number to choose
-- Full effects: particles, sound, 2s invulnerability
+- Multiple destinations → clickable chat menu (click a floor name to select)
+- Full effects: particles, sound, resistance potion
 - 1 second cooldown between teleports
+- Floors spawn players on top of the block (not inside)
 
 ---
 
