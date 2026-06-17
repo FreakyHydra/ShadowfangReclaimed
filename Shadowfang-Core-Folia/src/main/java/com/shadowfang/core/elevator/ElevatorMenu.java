@@ -39,7 +39,7 @@ public class ElevatorMenu {
         openMenus.remove(playerId);
     }
 
-    public static Inventory createMenu(Player player, List<ElevatorGroup.ElevatorFloor> floors, String groupName, int currentFloorIndex) {
+    public static Inventory createMenu(Player player, List<ElevatorGroup.ElevatorFloor> floors, String groupName) {
         int size = Math.min(54, ((floors.size() / 9) + 1) * 9);
         if (size < 9) size = 9;
 
@@ -47,9 +47,8 @@ public class ElevatorMenu {
 
         for (int i = 0; i < floors.size(); i++) {
             ElevatorGroup.ElevatorFloor floor = floors.get(i);
-            boolean isCurrentFloor = (i == currentFloorIndex);
 
-            ItemStack item = new ItemStack(isCurrentFloor ? Material.BARRIER : Material.PAPER);
+            ItemStack item = new ItemStack(Material.LADDER);
             ItemMeta meta = item.getItemMeta();
 
             String displayName = floor.getDisplayName();
@@ -57,17 +56,11 @@ public class ElevatorMenu {
                 displayName = "Floor " + (i + 1);
             }
 
-            if (isCurrentFloor) {
-                meta.displayName(Component.text(displayName + " (Current)").color(NamedTextColor.GRAY));
-            } else {
-                meta.displayName(Component.text(displayName).color(NamedTextColor.YELLOW));
-            }
+            meta.displayName(Component.text(displayName).color(NamedTextColor.YELLOW));
 
             List<Component> lore = new ArrayList<>();
             lore.add(Component.text(floor.getWorld() + ": " + floor.getX() + ", " + floor.getY() + ", " + floor.getZ()).color(DIM));
-            if (!isCurrentFloor) {
-                lore.add(Component.text("Click to teleport").color(NamedTextColor.GREEN));
-            }
+            lore.add(Component.text("Click to teleport").color(NamedTextColor.GREEN));
             meta.lore(lore);
 
             item.setItemMeta(meta);

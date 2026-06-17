@@ -158,12 +158,8 @@ public class ElevatorManager {
 
         List<ElevatorGroup.ElevatorFloor> allFloors = group.getFloors();
         List<ElevatorGroup.ElevatorFloor> destinations = new ArrayList<>();
-        int currentFloorIndex = -1;
-        for (int i = 0; i < allFloors.size(); i++) {
-            ElevatorGroup.ElevatorFloor floor = allFloors.get(i);
-            if (floor.getWorld().equals(world) && floor.getX() == x && floor.getY() == y && floor.getZ() == z) {
-                currentFloorIndex = i;
-            } else {
+        for (ElevatorGroup.ElevatorFloor floor : allFloors) {
+            if (!floor.getWorld().equals(world) || floor.getX() != x || floor.getY() != y || floor.getZ() != z) {
                 destinations.add(floor);
             }
         }
@@ -177,13 +173,13 @@ public class ElevatorManager {
             teleportTo(player, destinations.get(0));
         } else {
             pendingDestinations.put(id, destinations);
-            openElevatorMenu(player, destinations, group.getName(), currentFloorIndex);
+            openElevatorMenu(player, destinations, group.getName());
         }
     }
 
-    private void openElevatorMenu(Player player, List<ElevatorGroup.ElevatorFloor> destinations, String groupName, int currentFloorIndex) {
+    private void openElevatorMenu(Player player, List<ElevatorGroup.ElevatorFloor> destinations, String groupName) {
         ElevatorMenu.registerMenu(player.getUniqueId());
-        Inventory inv = ElevatorMenu.createMenu(player, destinations, groupName, currentFloorIndex);
+        Inventory inv = ElevatorMenu.createMenu(player, destinations, groupName);
         player.openInventory(inv);
         cooldowns.put(player.getUniqueId(), System.currentTimeMillis());
     }
