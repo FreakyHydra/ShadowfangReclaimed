@@ -8,9 +8,8 @@ A custom Folia 26.1.2 server plugin featuring factions, economy, bounties, lore,
 
 | Version | Notes |
 |---------|-------|
-| **v1.4.2** | **[NEW] Elevator GUI menu** — chest-based teleporter, sneak to open, click to teleport instantly |
-| **v1.4.1** | Direct click-to-teleport for elevators |
-| **v1.4.0** | **[NEW] Gold glassmorphic web dashboard**, clickable elevator menus, floor naming |
+| **v1.5.0** | **[NEW] Veinmining** — chain-mine ores and trees, look up/down for elevator direction |
+| **v1.4.2** | Elevator GUI menu, directional sneak (look up/down to choose floor) |
 | v1.3.1 | Jun 17, 2026 | Elevator/Teleporter System replaces road builder |
 | v1.3.0 | Jun 17, 2026 | Deprecated road builder |
 | v1.2.2 | Jun 17, 2026 | Fixed walk-paste rotation and segment length bugs |
@@ -92,11 +91,39 @@ Right-click blocks with wand     Add them as floors (type name in chat)
 ### How It Works
 - All pads with the same group name connect
 - Sneak on any pad to activate
-- Single destination → instant teleport
-- Multiple destinations → chest GUI menu (click floor item to teleport instantly)
+- **Vertical shaft** (floors stacked directly above/below):
+  - Look **up** + sneak → teleport to floor above
+  - Look **down** + sneak → teleport to floor below
+  - Look **ahead** → open chest GUI with all floors
+- **Lateral floors** (at different locations) → chest GUI menu
+- **Mixed shaft + lateral** → look up/down to go vertical, look ahead to open full menu
+- Single destination → instant teleport (no menu)
 - Full effects: particles, sound, resistance potion
 - 1 second cooldown between teleports
-- Floors spawn players on top of the block (not inside)
+- Floors spawn players centered on the block
+
+---
+
+## Veinmining (v1.5.0)
+
+Chain-mine connected ore blocks or chop whole trees with a single swing.
+
+### Commands
+```
+/sr veinmine          — Show current status
+/sr veinmine toggle   — Enable or disable veinmining
+/sr veinmine status   — Show on/off status
+```
+
+### How It Works
+- Enable veinmining, then break any ore or log block
+- All **connected blocks of the same type** within **30 blocks** of the player are mined
+- **Ores:** mine one coal ore → entire coal vein breaks
+- **Trees:** chop one log → entire trunk + nearby leaves break
+- Blacklisted blocks never veinmine: bedrock, obsidian, spawners, shulker boxes, ender chests, beacons, portals
+- Tool durability is consumed for each block broken (tool breaks if it runs out)
+- Drops are collected at the original block location
+- Permission: `shadowfang.admin`
 
 ---
 

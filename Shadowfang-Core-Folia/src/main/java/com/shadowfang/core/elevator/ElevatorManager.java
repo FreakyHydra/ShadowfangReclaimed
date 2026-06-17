@@ -214,16 +214,12 @@ public class ElevatorManager {
             } else if (lookingDown) {
                 teleportTo(player, floorBelow);
             } else {
-                if (!lateralFloors.isEmpty()) {
-                    List<ElevatorGroup.ElevatorFloor> combined = new ArrayList<>();
-                    combined.add(floorAbove);
-                    combined.add(floorBelow);
-                    combined.addAll(lateralFloors);
-                    pendingDestinations.put(id, combined);
-                    openElevatorMenu(player, combined, group.getName());
-                } else {
-                    player.sendMessage("§7Look ↑ or ↓ while sneaking to choose a floor.");
-                }
+                List<ElevatorGroup.ElevatorFloor> combined = new ArrayList<>();
+                combined.add(floorAbove);
+                combined.add(floorBelow);
+                combined.addAll(lateralFloors);
+                pendingDestinations.put(id, combined);
+                openElevatorMenu(player, combined, group.getName());
             }
         } else if (floorAbove != null) {
             teleportTo(player, floorAbove);

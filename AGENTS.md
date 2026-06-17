@@ -12,7 +12,7 @@
 
 | Plugin | build file | Current version |
 |--------|------------|-----------------|
-| Shadowfang-Core-Folia | `Shadowfang-Core-Folia/build.gradle` | 1.4.2 |
+| Shadowfang-Core-Folia | `Shadowfang-Core-Folia/build.gradle` | 1.5.0 |
 | RosettaStone | `RosettaStone/build.gradle` | 1.0.0 |
 
 ## Deployment rules

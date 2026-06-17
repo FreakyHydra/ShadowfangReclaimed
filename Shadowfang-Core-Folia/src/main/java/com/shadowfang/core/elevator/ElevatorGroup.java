@@ -81,7 +81,7 @@ public class ElevatorGroup {
         public Location toLocation() {
             World w = Bukkit.getWorld(world);
             if (w == null) return null;
-            return new Location(w, x, y + 1, z);
+            return new Location(w, x + 0.5, y + 1, z + 0.5);
         }
 
         public String toCoordString() {

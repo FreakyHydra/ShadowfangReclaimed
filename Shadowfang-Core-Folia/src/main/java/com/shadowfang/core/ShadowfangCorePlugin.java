@@ -19,6 +19,9 @@ import com.shadowfang.core.infoboard.InfoBoardListener;
 import com.shadowfang.core.infoboard.InfoBoardManager;
 import com.shadowfang.core.lore.LoreManager;
 import com.shadowfang.core.verse.HubManager;
+import com.shadowfang.core.veinmining.VeinMineCommand;
+import com.shadowfang.core.veinmining.VeinMineListener;
+import com.shadowfang.core.veinmining.VeinMineManager;
 import com.shadowfang.core.verse.SignClickListener;
 import com.shadowfang.core.verse.TeleportManager;
 import com.shadowfang.core.verse.VerseManager;
@@ -43,6 +46,7 @@ public class ShadowfangCorePlugin extends JavaPlugin {
     private com.shadowfang.core.terminal.WebTerminalServer webTerminalServer;
     private InfoBoardManager infoBoardManager;
     private ElevatorManager elevatorManager;
+    private VeinMineManager veinMineManager;
 
     @Override
     public void onEnable() {
@@ -94,6 +98,11 @@ public class ShadowfangCorePlugin extends JavaPlugin {
         ElevatorCommand elevatorCmd = new ElevatorCommand(elevatorManager, this);
         getServer().getPluginManager().registerEvents(new ElevatorListener(elevatorManager, this), this);
 
+        // --- Initialize VeinMining ---
+        veinMineManager = new VeinMineManager(this);
+        VeinMineCommand veinMineCmd = new VeinMineCommand(veinMineManager);
+        getServer().getPluginManager().registerEvents(new VeinMineListener(veinMineManager), this);
+
         // --- Verse sub-plugin ---
         VerseCommand verseCmd = new VerseCommand(teleportManager);
 
@@ -105,6 +114,7 @@ public class ShadowfangCorePlugin extends JavaPlugin {
         sr.register(loreCommand, "l", "lore");
         sr.registerPerm(boardCmd, "shadowfang.admin", "i", "infoboard", "board");
         sr.registerPerm(elevatorCmd, "shadowfang.admin", "el", "elevator", "tp");
+        sr.registerPerm(veinMineCmd, "shadowfang.admin", "vm", "veinmine");
         sr.register(verseCmd, "v", "verse", "sign", "list", "worlds");
         sr.registerDef(verseCmd, new String[]{"travel"}, "t", "travel");
         sr.registerDef(verseCmd, new String[]{"hub"}, "h", "hub");
@@ -175,4 +185,5 @@ public class ShadowfangCorePlugin extends JavaPlugin {
     public VerseManager getVerseManager() { return verseManager; }
     public InfoBoardManager getInfoBoardManager() { return infoBoardManager; }
     public ElevatorManager getElevatorManager() { return elevatorManager; }
+    public VeinMineManager getVeinMineManager() { return veinMineManager; }
 }
