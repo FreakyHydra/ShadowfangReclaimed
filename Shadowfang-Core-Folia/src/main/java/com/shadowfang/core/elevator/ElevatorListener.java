@@ -47,11 +47,7 @@ public class ElevatorListener implements Listener {
         int z = block.getZ();
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (manager.addFloor(groupName, world, x, y, z)) {
-                event.getPlayer().sendMessage("§aFloor added to §e" + groupName + " §aat §f" + x + "," + y + "," + z + "§a.");
-            } else {
-                event.getPlayer().sendMessage("§cFailed to add floor.");
-            }
+            manager.promptFloorNaming(event.getPlayer(), groupName, world, x, y, z);
         }
     }
 
@@ -84,16 +80,22 @@ public class ElevatorListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         if (manager.handleChatSelection(event.getPlayer(), event.getMessage())) {
             event.setCancelled(true);
+            return;
+        }
+        if (manager.handleFloorNaming(event.getPlayer(), event.getMessage())) {
+            event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         manager.clearPendingDestination(event.getPlayer().getUniqueId());
+        manager.clearPendingFloorName(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         manager.clearPendingDestination(event.getPlayer().getUniqueId());
+        manager.clearPendingFloorName(event.getPlayer().getUniqueId());
     }
 }

@@ -12,20 +12,36 @@
 
 | Plugin | build file | Current version |
 |--------|------------|-----------------|
-| Shadowfang-Core-Folia | `Shadowfang-Core-Folia/build.gradle` | 1.3.1 |
+| Shadowfang-Core-Folia | `Shadowfang-Core-Folia/build.gradle` | 1.4.0 |
 | RosettaStone | `RosettaStone/build.gradle` | 1.0.0 |
 
 ## Deployment rules
 
-- **ALWAYS stop the server before replacing JARs.** The running server locks plugin files, causing copy/remove failures. Stop the server first, replace the JAR, then start it again.
+- **NEVER kill Java processes to stop the server** until after worlds have been saved. Killing Java processes (e.g., `Stop-Process -Name java`) before save completes leaves file locks on JARs, world files, and session.lock, causing crash loops and corrupted state on restart.
+- **The ONLY correct stop sequence is:**
+  1. Run `stop` command in the server console (or connect via RCON and send `stop`)
+  2. Wait for the process to exit and port 25565 to be released
+  3. **Never stop without saving** — the `stop` command auto-saves worlds; do not kill the process until it completes
+  4. After the `stop` command is sent, wait 5 seconds for saves to complete, then verify port 25565 is released
+  5. After save is confirmed complete, it is safe to brute-force kill remaining Java processes if needed
+  6. Only then: delete old JARs, copy new JARs
+  7. **Do NOT start the server** — leave it stopped. The user will start it themselves to verify.
+  8. If startup must be verified, check the logs for errors after the user confirms the server is running.
+- **If the server refuses to start due to file locks after a failed stop**, the workspace is corrupted. The user must manually fix it by:
+  - Deleting `foliaserver/plugins/` duplicate JARs
+  - Deleting `foliaserver/session.lock` (leftover from unclean shutdown)
+  - Restarting the server normally
+- **Server file locks also prevent JAR deletion while the server is running.** If `Remove-Item` fails with "file is being used by another process", the server is still running — do NOT force-delete, stop the server properly instead.
 
 ## How to bump a version
 
 1. Edit the `version` field in the plugin's `build.gradle`
 2. Rebuild: `./gradlew jar --console=plain` (run from that plugin's directory)
-3. **Stop the server**
-4. Copy the JAR from `build/libs/<name>-<version>.jar` to `foliaserver/plugins/`
-5. Start the server
+3. **Stop the server** using the `stop` command in the server console — wait for it to fully exit
+4. Verify port 25565 is free: `Get-NetTCPConnection -LocalPort 25565` returns nothing
+5. Delete old JAR versions from `foliaserver/plugins/` to avoid "Ambiguous plugin name" errors
+6. Copy the new JAR from `build/libs/<name>-<version>.jar` to `foliaserver/plugins/`
+7. Start the server with `start.bat`
 
 ### Example (Shadowfang-Core-Folia)
 

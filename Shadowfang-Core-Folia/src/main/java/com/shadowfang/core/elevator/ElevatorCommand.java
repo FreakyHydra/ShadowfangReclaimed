@@ -163,6 +163,38 @@ public class ElevatorCommand implements CommandExecutor, TabCompleter {
                 }
             }
 
+            case "namefloor" -> {
+                if (!sender.hasPermission("shadowfang.admin")) {
+                    sender.sendMessage("§cNo permission.");
+                    return true;
+                }
+                if (args.length < 4) {
+                    sender.sendMessage("§cUsage: /sr elevator namefloor <name> <floor_number> <display_name>");
+                    return true;
+                }
+                ElevatorGroup eg = manager.getGroup(args[1]);
+                if (eg == null) {
+                    sender.sendMessage("§cGroup §e" + args[1] + " §cdoes not exist.");
+                    return true;
+                }
+                int idx;
+                try {
+                    idx = Integer.parseInt(args[2]) - 1;
+                } catch (NumberFormatException e) {
+                    sender.sendMessage("§cInvalid floor number.");
+                    return true;
+                }
+                String newName = args[3];
+                if (args.length > 4) {
+                    newName = String.join(" ", java.util.Arrays.copyOfRange(args, 3, args.length));
+                }
+                if (manager.renameFloor(args[1], idx, newName)) {
+                    sender.sendMessage("§aFloor §e" + args[2] + " §arenamed to §e\"" + newName + "\"§a.");
+                } else {
+                    sender.sendMessage("§cInvalid floor number.");
+                }
+            }
+
             case "help" -> sendHelp(sender);
 
             default -> sendHelp(sender);
@@ -193,8 +225,9 @@ public class ElevatorCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage("§e/sr elevator list §7- List all groups");
         sender.sendMessage("§e/sr elevator info <name> §7- Show floors in group");
         sender.sendMessage("§e/sr elevator delfloor <name> <#> §7- Remove floor by number");
+        sender.sendMessage("§e/sr elevator namefloor <name> <#> <display> §7- Rename a floor");
         sender.sendMessage("");
-        sender.sendMessage("§7Wand: §fRight-click §7= add floor, §fLeft-click §7= remove floor");
+        sender.sendMessage("§7Wand: §fRight-click §7= add floor (type name in chat), §fLeft-click §7= remove floor");
         sender.sendMessage("§7Teleporter: §fSneak §7on a floor pad to activate");
     }
 
@@ -203,10 +236,10 @@ public class ElevatorCommand implements CommandExecutor, TabCompleter {
         List<String> completions = new ArrayList<>();
 
         if (args.length == 1) {
-            completions.addAll(Arrays.asList("create", "assign", "remove", "list", "info", "delfloor", "help"));
+            completions.addAll(Arrays.asList("create", "assign", "remove", "list", "info", "delfloor", "namefloor", "help"));
         } else if (args.length == 2) {
             String sub = args[0].toLowerCase();
-            if (sub.equals("assign") || sub.equals("remove") || sub.equals("info") || sub.equals("delfloor")) {
+            if (sub.equals("assign") || sub.equals("remove") || sub.equals("info") || sub.equals("delfloor") || sub.equals("namefloor")) {
                 for (ElevatorGroup g : manager.getAllGroups()) {
                     completions.add(g.getName());
                 }

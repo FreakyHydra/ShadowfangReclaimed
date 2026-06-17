@@ -4,6 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shadowfang.core.ShadowfangCorePlugin;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -26,6 +31,7 @@ public class ElevatorManager {
     private final Map<String, ElevatorGroup> groups = new ConcurrentHashMap<>();
     private final Map<UUID, Long> cooldowns = new ConcurrentHashMap<>();
     private final Map<UUID, List<ElevatorGroup.ElevatorFloor>> pendingDestinations = new ConcurrentHashMap<>();
+    private final Map<UUID, PendingFloor> pendingFloorNames = new ConcurrentHashMap<>();
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private Path dataFile;
 
@@ -187,12 +193,14 @@ public class ElevatorManager {
         to.setPitch(from.getPitch());
 
         spawnDepartureEffects(player);
-        player.teleport(to);
-        spawnArrivalEffects(player);
-
-        player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 40, 4, false, false));
-        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
-        player.playSound(to, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
+        player.teleportAsync(to).thenAccept(success -> {
+            if (success) {
+                spawnArrivalEffects(player);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 40, 4, false, false));
+                player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
+                player.playSound(to, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
+            }
+        });
 
         cooldowns.put(player.getUniqueId(), System.currentTimeMillis());
     }
@@ -209,23 +217,38 @@ public class ElevatorManager {
     }
 
     private void showDestinationMenu(Player player, List<ElevatorGroup.ElevatorFloor> destinations) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("§6§lTeleport Menu\n");
-        sb.append("§7Choose a destination:\n");
+        Component header = Component.text("§6§l✦ Teleport Menu §6§l✦")
+            .append(Component.newline())
+            .append(Component.text("§7Click a floor to teleport:").append(Component.newline()));
 
+        Component[] floorComponents = new Component[destinations.size()];
         for (int i = 0; i < destinations.size(); i++) {
             ElevatorGroup.ElevatorFloor floor = destinations.get(i);
             String name = floor.getDisplayName();
             if (name == null || name.isEmpty()) {
                 name = "Floor " + (i + 1);
             }
-            sb.append("§e").append(i + 1).append(". §f").append(name);
-            sb.append(" §7(").append(floor.getWorld()).append(": ").append(floor.getX()).append(", ").append(floor.getY()).append(", ").append(floor.getZ()).append(")\n");
+            String number = String.valueOf(i + 1);
+            String hover = floor.getWorld() + ": " + floor.getX() + ", " + floor.getY() + ", " + floor.getZ();
+            Component floorLine = Component.text("§e▸ §f" + name)
+                .hoverEvent(HoverEvent.showText(Component.text("§7" + hover + "\n§aClick to teleport")))
+                .clickEvent(ClickEvent.suggestCommand(number))
+                .append(Component.text(" §7(" + hover + ")", NamedTextColor.DARK_GRAY))
+                .append(Component.newline());
+            floorComponents[i] = floorLine;
         }
 
-        sb.append("§7Type the number in chat to select.");
+        Component footer = Component.text("§7Or type the floor number in chat.")
+            .append(Component.newline())
+            .append(Component.text("§8§oSneak again to cancel.", TextColor.color(0x555555)));
 
-        player.sendMessage(Component.text(sb.toString()));
+        Component menu = header;
+        for (Component c : floorComponents) {
+            menu = menu.append(c);
+        }
+        menu = menu.append(footer);
+
+        player.sendMessage(menu);
         cooldowns.put(player.getUniqueId(), System.currentTimeMillis());
     }
 
@@ -256,10 +279,46 @@ public class ElevatorManager {
         pendingDestinations.remove(id);
     }
 
+    public void clearPendingFloorName(UUID id) {
+        pendingFloorNames.remove(id);
+    }
+
     private static class ElevatorData {
         Map<String, ElevatorGroup> groups;
         ElevatorData(Map<String, ElevatorGroup> groups) {
             this.groups = groups;
         }
+    }
+
+    private record PendingFloor(String groupName, String world, int x, int y, int z) {}
+
+    public void promptFloorNaming(Player player, String groupName, String world, int x, int y, int z) {
+        pendingFloorNames.put(player.getUniqueId(), new PendingFloor(groupName, world, x, y, z));
+        player.sendMessage("§6§lFloor Name §7- Type a name for this floor, or §e\"skip\"§7 for no name.");
+    }
+
+    public boolean handleFloorNaming(Player player, String message) {
+        PendingFloor pending = pendingFloorNames.remove(player.getUniqueId());
+        if (pending == null) return false;
+
+        String name = message.trim();
+        if (name.equalsIgnoreCase("skip") || name.isEmpty()) {
+            addFloor(pending.groupName(), pending.world(), pending.x(), pending.y(), pending.z());
+            player.sendMessage("§aFloor added at §f" + pending.x() + "," + pending.y() + "," + pending.z() + " §awithout a name.");
+        } else {
+            addFloor(pending.groupName(), pending.world(), pending.x(), pending.y(), pending.z(), name);
+            player.sendMessage("§aFloor added as §e\"" + name + "\" §aat §f" + pending.x() + "," + pending.y() + "," + pending.z() + "§a.");
+        }
+        return true;
+    }
+
+    public boolean renameFloor(String groupName, int index, String newName) {
+        ElevatorGroup group = groups.get(groupName.toLowerCase());
+        if (group == null) return false;
+        ElevatorGroup.ElevatorFloor floor = group.getFloor(index);
+        if (floor == null) return false;
+        floor.setDisplayName(newName);
+        save();
+        return true;
     }
 }
