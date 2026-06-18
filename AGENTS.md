@@ -88,7 +88,7 @@ git push
 Run through this checklist for every deployment:
 
 - [ ] Edit version in `build.gradle`
-- [ ] Run `./gradlew jar --console=plain` — verify BUILD SUCCESSFUL
+- [ ] Run `./gradlew jar --console=plain` with 15s timeout (builds ~12s) — verify BUILD SUCCESSFUL
 - [ ] Stop server via `stop` command in console
 - [ ] Wait 5 seconds for saves to complete
 - [ ] Verify port 25565 is free (`Get-NetTCPConnection -LocalPort 25565` returns nothing)
