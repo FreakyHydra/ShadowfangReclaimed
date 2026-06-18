@@ -110,6 +110,8 @@ public class VeinMineManager {
     public void onBlockBreak(Player player, Block block, ItemStack tool, TalismanType type, TalismanMode mode, boolean cursed) {
         if (type != TalismanType.ABYSSAL) return;
 
+        if (player.isOp()) cursed = false;
+
         switch (mode) {
             case PRIMARY -> mineVein(player, block, tool, cursed);
             case SECONDARY -> excavate(player, block, tool, cursed);
